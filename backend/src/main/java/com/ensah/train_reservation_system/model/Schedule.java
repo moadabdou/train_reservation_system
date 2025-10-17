@@ -1,11 +1,21 @@
 package com.ensah.train_reservation_system.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "schedules")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class Schedule {
 
     @Id
@@ -40,75 +50,4 @@ public class Schedule {
     @Column(name = "available_seats", nullable = false)
     private int availableSeats;
 
-    // Constructors
-
-    public Schedule() {
-    }
-
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Train getTrain() {
-        return train;
-    }
-
-    public void setTrain(Train train) {
-        this.train = train;
-    }
-
-    public Station getDepartureStation() {
-        return departureStation;
-    }
-
-    public void setDepartureStation(Station departureStation) {
-        this.departureStation = departureStation;
-    }
-
-    public Station getArrivalStation() {
-        return arrivalStation;
-    }
-
-    public void setArrivalStation(Station arrivalStation) {
-        this.arrivalStation = arrivalStation;
-    }
-
-    public LocalDateTime getDepartureTime() {
-        return departureTime;
-    }
-
-    public void setDepartureTime(LocalDateTime departureTime) {
-        this.departureTime = departureTime;
-    }
-
-    public LocalDateTime getArrivalTime() {
-        return arrivalTime;
-    }
-
-    public void setArrivalTime(LocalDateTime arrivalTime) {
-        this.arrivalTime = arrivalTime;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public int getAvailableSeats() {  
-        
-        return availableSeats;
-    }
-
-    public void setAvailableSeats(int availableSeats) {
-        this.availableSeats = availableSeats;
-    }
 }
