@@ -124,3 +124,7 @@ This feature completes the booking lifecycle.
     3.  **Front-end:**
         * On the "My Bookings" page, add a "Cancel" button next to each upcoming trip.
         * When clicked, it should call the cancellation API and update the UI to show the trip as cancelled.
+
+
+
+mvn archetype:generate -DarchetypeGroupId=org.openjfx -DarchetypeArtifactId=javafx-archetype-simple -DarchetypeVersion=0.0.6 -DgroupId=org.openjfx -DartifactId=sample -Dversion=1.0.0 -Djavafx-version=25

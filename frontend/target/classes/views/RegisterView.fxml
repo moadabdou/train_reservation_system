@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ma.ensah.ui.RegisterController" styleClass="root">
+
+    <!-- Header -->
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12">
+        <padding><Insets top="12" right="20" bottom="12" left="20" /></padding>
+        <Label text="🚄" styleClass="logo-icon" onMouseClicked="#goHome"/>
+        <Label text="TrainReserve" styleClass="brand" onMouseClicked="#goHome"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="headerLoginBtn" text="Login" styleClass="btn-secondary" onAction="#goLogin"/>
+        <Button fx:id="headerRegisterBtn" text="Register" styleClass="btn-primary" disable="true"/>
+        <Button fx:id="headerLogoutBtn" text="Logout" styleClass="btn-secondary" onAction="#logout" visible="false" managed="false"/>
+    </HBox>
+
+    <!-- Content -->
+    <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+        <VBox spacing="18" alignment="CENTER" maxWidth="520" prefWidth="460">
+            <padding><Insets top="40" right="20" bottom="40" left="20"/></padding>
+            <VBox styleClass="search-card" spacing="14" maxWidth="520">
+                <padding><Insets top="24" right="28" bottom="24" left="28" /></padding>
+
+                <Label text="Create account" styleClass="card-title">
+                    <font><Font name="System Bold" size="16" /></font>
+                </Label>
+
+                <VBox spacing="8">
+                    <Label text="Full name" styleClass="input-label"/>
+                    <TextField fx:id="nameField" promptText="John Doe" styleClass="combo-input"/>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label text="Email" styleClass="input-label"/>
+                    <TextField fx:id="emailField" promptText="a@a.com" styleClass="combo-input"/>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label text="Password" styleClass="input-label"/>
+                    <PasswordField fx:id="passwordField" promptText="••••••" styleClass="combo-input"/>
+                </VBox>
+
+                <Button fx:id="submitBtn" text="Create account" onAction="#onSubmit" styleClass="btn-search" prefHeight="24">
+                    <VBox.margin>
+                        <Insets top="10" />
+                    </VBox.margin>
+                </Button>
+
+                <HBox spacing="6">
+                    <Label text="Already have an account?" styleClass="empty-hint"/>
+                    <Hyperlink fx:id="toLoginLink" text="Sign in"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </HBox>
+</VBox>

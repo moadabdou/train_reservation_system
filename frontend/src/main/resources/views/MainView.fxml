@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ma.ensah.ui.MainController" styleClass="root">
+    
+    <!-- Header -->
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12">
+        <padding><Insets top="12" right="20" bottom="12" left="20" /></padding>
+        <Label text="🚄" styleClass="logo-icon" onMouseClicked="#goHome"/>
+        <Label text="TrainReserve" styleClass="brand" onMouseClicked="#goHome"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="headerLoginBtn" text="Login" styleClass="btn-secondary" onAction="#goLogin"/>
+        <Button fx:id="headerRegisterBtn" text="Register" styleClass="btn-primary" onAction="#goRegister"/>
+        <Button fx:id="headerLogoutBtn" text="Logout" styleClass="btn-secondary" onAction="#logout" visible="false" managed="false"/>
+    </HBox>
+    
+    <!-- Main Content -->
+    <!-- Remove outer ScrollPane so the results list can own the vertical scroll and fill height -->
+    <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+        <VBox styleClass="content-area" maxWidth="960" prefWidth="720" HBox.hgrow="NEVER">
+            <!-- Reduce bottom padding so the list sits closer to the window bottom -->
+            <padding><Insets top="40" right="20" bottom="12" left="20" /></padding>
+            
+            <!-- Search Card -->
+            <VBox styleClass="search-card" spacing="18">
+                <padding><Insets top="24" right="28" bottom="24" left="28" /></padding>
+                
+                <Label text="Find Your Journey" styleClass="card-title">
+                    <font><Font name="System Bold" size="14" /></font>
+                </Label>
+                
+                <HBox spacing="14" alignment="CENTER">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="Departure Station" styleClass="input-label"/>
+                        <ComboBox fx:id="fromStation" promptText="Select departure station" 
+                                  styleClass="combo-input" maxWidth="Infinity"/>
+                    </VBox>
+                    
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="Arrival Station" styleClass="input-label"/>
+                        <ComboBox fx:id="toStation" promptText="Select arrival station" 
+                                  styleClass="combo-input" maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+                
+                <HBox spacing="14">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="Date" styleClass="input-label"/>
+                        <DatePicker fx:id="datePicker" promptText="Select date" 
+                                    styleClass="date-input" maxWidth="Infinity"/>
+                    </VBox>
+                    <VBox spacing="8" alignment="BOTTOM_LEFT">
+                        <Label text=" " styleClass="input-label"/>
+                        <Button fx:id="searchBtn" text="🔍 Search Trains" onAction="#onSearch" 
+                                styleClass="btn-search" prefWidth="160" prefHeight="20"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+            
+            <!-- Results Section -->
+            <VBox spacing="14" VBox.vgrow="ALWAYS">
+                <!-- Smaller bottom padding for a tighter layout -->
+                <padding><Insets top="32" right="0" bottom="8" left="0" /></padding>
+                
+                <Label text="Available Train Services" styleClass="section-title">
+                    <font><Font name="System Bold" size="13" /></font>
+                </Label>
+                
+                <!-- Train Cards List -->
+                <!-- Let the list own scrolling and fill all remaining height -->
+                <ListView fx:id="trainList" styleClass="train-list" VBox.vgrow="ALWAYS"
+                          style="-fx-padding: 16 0 8 0;" maxHeight="Infinity">
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="10" styleClass="empty-state">
+                            <padding><Insets top="30" right="24" bottom="30" left="24" /></padding>
+                            <Label text="🚆" style="-fx-font-size: 40px; -fx-opacity: 0.3;"/>
+                            <Label text="Search for train schedules" styleClass="empty-title"/>
+                            <Label text="Enter your route and date to see available services" styleClass="empty-hint"/>
+                        </VBox>
+                    </placeholder>
+                </ListView>
+            </VBox>
+        </VBox>
+    </HBox>
+</VBox>
