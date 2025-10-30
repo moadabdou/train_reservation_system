@@ -60,6 +60,20 @@ public class ApiClient {
         throw new IOException("HTTP " + res.statusCode() + " for POST " + path + ": " + res.body());
     }
 
+    public void delete(String path) throws IOException, InterruptedException {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + path))
+                .timeout(Duration.ofSeconds(10))
+                .method("DELETE", HttpRequest.BodyPublishers.noBody())
+                .headers(defaultHeaders())
+                .build();
+        HttpResponse<String> res = http.send(req, HttpResponse.BodyHandlers.ofString());
+        if (res.statusCode() >= 200 && res.statusCode() < 300) {
+            return;
+        }
+        throw new IOException("HTTP " + res.statusCode() + " for DELETE " + path + ": " + res.body());
+    }
+
     private String[] defaultHeaders() {
         String token = Session.getToken();
         if (token != null && !token.isBlank()) {

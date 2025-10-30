@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ma.ensah.ui.BookingsController" styleClass="root">
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12">
+        <padding><Insets top="12" right="20" bottom="12" left="20" /></padding>
+        <Label text="🚄" styleClass="logo-icon" onMouseClicked="#goHome"/>
+        <Label text="TrainReserve" styleClass="brand" onMouseClicked="#goHome"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="Back" styleClass="btn-secondary" onAction="#goHome"/>
+    </HBox>
+
+    <HBox spacing="12" VBox.vgrow="ALWAYS" alignment="CENTER">
+        <VBox styleClass="content-area" maxWidth="960" prefWidth="900" spacing="16" VBox.vgrow="ALWAYS">
+            <padding><Insets top="24" right="20" bottom="24" left="20"/></padding>
+
+            <Label text="My Bookings" styleClass="card-title">
+                <font><Font name="System Bold" size="14" /></font>
+            </Label>
+
+            <SplitPane VBox.vgrow="ALWAYS" dividerPositions="0.55">
+                <items>
+                    <VBox spacing="8" styleClass="search-card">
+                        <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                        <Label text="Recent" styleClass="input-label"/>
+                        <ListView fx:id="bookingList" prefWidth="340" styleClass="booking-list"/>
+                    </VBox>
+                    <VBox spacing="10" styleClass="search-card" VBox.vgrow="ALWAYS">
+                        <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Label fx:id="detailsTitle" styleClass="section-title"/>
+                            <Label fx:id="detailsStatus"/>
+                        </HBox>
+                        <Label fx:id="detailsMeta" styleClass="meta-text"/>
+                        <Label text="Passengers" styleClass="input-label"/>
+                        <ListView fx:id="passengersList" styleClass="passenger-list"/>
+                        <HBox alignment="CENTER_RIGHT">
+                            <Button fx:id="cancelBtn" text="Cancel Booking" styleClass="btn-secondary" onAction="#cancelSelected" visible="false" managed="false"/>
+                        </HBox>
+                    </VBox>
+                </items>
+            </SplitPane>
+        </VBox>
+    </HBox>
+</VBox>

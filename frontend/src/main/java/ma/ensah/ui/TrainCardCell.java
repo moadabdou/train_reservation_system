@@ -6,6 +6,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
+import ma.ensah.config.Session;
 import ma.ensah.model.Schedule;
 
 import java.time.Duration;
@@ -131,6 +133,7 @@ public class TrainCardCell extends ListCell<Schedule> {
         bookBtn.getStyleClass().add("btn-book");
         bookBtn.setPrefWidth(280);
         bookBtn.setPrefHeight(32);
+    bookBtn.setOnAction(e -> onProceedToBooking());
 
         footer.getChildren().clear();
         footer.getChildren().addAll(leftInfo, bookBtn);
@@ -176,5 +179,27 @@ public class TrainCardCell extends ListCell<Schedule> {
             setPrefHeight(Region.USE_COMPUTED_SIZE);
             setMaxHeight(Region.USE_COMPUTED_SIZE);
         }
+    }
+
+    private void onProceedToBooking() {
+        Schedule schedule = getItem();
+        if (schedule == null) return;
+
+        if (!Session.isAuthenticated()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Login required");
+            alert.setHeaderText(null);
+            alert.setContentText("Please log in to proceed with booking.");
+            alert.showAndWait();
+            // Navigate to login view
+            Stage stage = (Stage) card.getScene().getWindow();
+            Navigation.goTo(stage, "/views/LoginView.fxml");
+            return;
+        }
+
+        // Store selected schedule and navigate to booking page
+        Session.setSelectedSchedule(schedule);
+        Stage stage = (Stage) card.getScene().getWindow();
+        Navigation.goTo(stage, "/views/BookingView.fxml");
     }
 }

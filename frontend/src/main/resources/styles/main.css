@@ -2,7 +2,7 @@
 .root {
     -fx-background-color: #fafafa;
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
 }
 
 /* Header */
@@ -93,6 +93,42 @@ ComboBox.combo-input{
     -fx-cursor: hand;
 }
 
+    /* Bookings list styling */
+    .booking-item {
+        -fx-padding: 10 12;
+        -fx-alignment: CENTER_LEFT;
+    }
+    .booking-ref {
+        -fx-font-size: 13px;
+        -fx-font-weight: 600;
+        -fx-text-fill: #111827;
+    }
+    .meta-muted {
+        -fx-text-fill: #9aa3ae;
+        -fx-font-size: 12px;
+    }
+    .amount {
+        -fx-font-weight: 600;
+        -fx-text-fill: #111827;
+    }
+    .badge {
+        -fx-padding: 2 8;
+        -fx-background-radius: 12;
+        -fx-font-size: 11px;
+        -fx-font-weight: 700;
+    }
+    .badge-confirmed {
+        -fx-background-color: rgba(16, 185, 129, 0.15);
+        -fx-text-fill: #10b981;
+    }
+    .badge-cancelled {
+        -fx-background-color: rgba(239, 68, 68, 0.15);
+        -fx-text-fill: #ef4444;
+    }
+    .btn-danger {
+        -fx-background-color: #ef4444;
+        -fx-text-fill: white;
+    }
 .btn-primary:hover {
     -fx-background-color: #ea580c;
 }
@@ -280,6 +316,142 @@ ComboBox.combo-input{
     -fx-background-color: #c2410c;
 }
 
+/* SplitPane divider subtle line */
+.split-pane > .split-pane-divider {
+    -fx-background-color: #e5e7eb;
+    -fx-padding: 0 1 0 1;
+}
+
+/* Booking list modern look */
+.booking-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-selection-bar: transparent;
+    -fx-selection-bar-non-focused: transparent;
+    -fx-selection-bar-text: #111827;
+}
+.booking-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 2 2 2 2;
+    -fx-background-insets: 0;
+}
+.booking-list .list-cell:filled:hover { -fx-background-color: transparent; }
+.booking-list .list-cell:selected { -fx-background-color: transparent; }
+.booking-list .list-cell:selected .booking-item {
+    -fx-border-color: #f97316;
+    -fx-border-width: 1px 1px 1px 3px;
+    -fx-background-color: rgba(249, 115, 22, 0.06);
+    -fx-effect: dropshadow(gaussian, rgba(249,115,22,0.12), 10, 0, 0, 2);
+}
+.booking-list .list-cell:filled:selected .booking-item .label {
+    -fx-text-fill: #111827;
+}
+.booking-list .list-cell:filled:selected .text {
+    -fx-fill: #111827; /* ensure Text nodes (inside Labels) don't turn white */
+}
+.booking-list .list-cell:filled:selected .booking-item .booking-ref,
+.booking-list .list-cell:filled:selected .booking-item .amount {
+    -fx-text-fill: #111827;
+}
+.booking-list .list-cell:filled:selected .booking-item .meta-muted {
+    -fx-text-fill: #9aa3ae;
+}
+.booking-list .list-cell:filled:selected .booking-item .meta-muted .text {
+    -fx-fill: #9aa3ae;
+}
+.booking-list .list-cell .booking-item {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+}
+.booking-list .list-cell .booking-item:hover {
+    -fx-border-color: #f59e0b;
+    -fx-effect: dropshadow(gaussian, rgba(249,115,22,0.10), 8, 0, 0, 2);
+}
+.booking-list:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected,
+.booking-list > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color: transparent;
+}
+.booking-list .list-cell:empty { -fx-opacity: 0; -fx-pref-height: 0; }
+
+/* Passengers List */
+.passenger-list {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+}
+.passenger-list .list-cell {
+    -fx-background-color: white;
+}
+.passenger-list .list-cell:filled:selected {
+    -fx-background-color: rgba(249, 115, 22, 0.06);
+}
+.passenger-list .list-cell:empty { -fx-opacity: 0; -fx-pref-height: 0; }
+
+.chip {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #374151;
+    -fx-padding: 4 10;
+    -fx-background-radius: 999;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.booking-list .list-cell .booking-item {
+    -fx-background-color: linear-gradient(to bottom, white, #fbfbfb);
+}
+
+/* Booking - passenger cards */
+.passenger-card {
+    -fx-background-color: #fff;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+}
+
+.text-input {
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 8px 10px;
+    -fx-font-size: 13px;
+}
+.text-input:focused {
+    -fx-border-color: #f97316;
+    -fx-effect: dropshadow(gaussian, rgba(249, 115, 22, 0.15), 6, 0, 0, 0);
+}
+
+/* Booking summary & meta */
+.meta-text {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12px;
+}
+
+/* Tighter heading to content spacing inside cards */
+.search-card > .label.section-title {
+    -fx-padding: 0 0 4 0;
+}
+
+/* Scroll wrapper for passengers */
+.passenger-scroll {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+}
+.passenger-scroll > .viewport {
+    -fx-background-color: white;
+}
+
 /* Empty State */
 .empty-state {
     -fx-background-color: white;
@@ -317,4 +489,53 @@ ComboBox.combo-input{
 
 .scroll-bar:horizontal .track {
     -fx-background-color: transparent;
+}
+
+/* Floating action button (left) */
+/* Left half-circle tab (label) */
+.fab-left {
+    -fx-background-color: #f97316;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-font-size: 20px;
+    -fx-alignment: center;
+    -fx-background-radius: 0 40 40 0 ; /* taller half-round */
+    -fx-padding: 0 8 0 10;
+    -fx-translate-x: -10; /* slight overlap with the edge */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 10, 0, 0, 2);
+}
+.fab-left:hover {
+    -fx-background-color: #ea580c;
+}
+
+/* Side panel */
+.side-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 0 10 10 0;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 0);
+}
+
+/* Sidebar nav items */
+.nav-item {
+    -fx-padding: 8 10;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.nav-item:hover {
+    -fx-background-color: #f5f6f7;
+}
+.nav-icon {
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-fill: #6b7280; /* for SVGPath */
+}
+.nav-text {
+    -fx-text-fill: #111827;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
 }

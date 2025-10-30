@@ -127,4 +127,114 @@ This feature completes the booking lifecycle.
 
 
 
-mvn archetype:generate -DarchetypeGroupId=org.openjfx -DarchetypeArtifactId=javafx-archetype-simple -DarchetypeVersion=0.0.6 -DgroupId=org.openjfx -DartifactId=sample -Dversion=1.0.0 -Djavafx-version=25
+## Authentication
+
+- All endpoints under `/api/bookings` require a valid JWT.
+- Send header: Authorization: Bearer <token>
+- Content-Type: application/json for requests with a body.
+
+## POST /api/bookings
+
+- Purpose: Create a booking for a schedule with a list of passengers. This is atomic and prevents overbooking.
+- Auth: Required
+- Request body:
+  - scheduleId: number (required)
+  - passengers: array of objects (required, non-empty)
+    - name: string (not blank)
+    - age: number (>= 0)
+- Example request:
+  {
+    "scheduleId": 123,
+    "passengers": [
+      { "name": "Alice", "age": 30 },
+      { "name": "Bob", "age": 28 }
+    ]
+  }
+- Response: 200 OK
+  - bookingId: number
+  - referenceCode: string (random, 24 hex chars, unique)
+  - scheduleId: number
+  - bookingDate: string (ISO timestamp)
+  - status: string ("CONFIRMED")
+  - passengers: array of { name, age }
+  - totalPrice: number (decimal as string in JSON)
+- Errors:
+  - 400 Bad Request
+    - Validation failed (missing scheduleId, empty passengers, blank name, negative age)
+    - Invalid scheduleId (not found)
+  - 409 Conflict
+    - Not enough available seats
+  - 401 Unauthorized
+    - Missing/invalid JWT
+  - 500 Internal Server Error
+    - Unexpected server error
+
+Notes:
+- Seats are decremented atomically in the database. If two users race, only one succeeds.
+
+Request/Response example
+
+GET /api/bookings?page=0&size=5
+200 OK
+JSON body is a Spring Data Page structure:
+content: [ { bookingId, referenceCode, scheduleId, bookingDate, status, passengersCount, totalPrice }, ... ]
+pageable: { ... }
+totalElements, totalPages, size, number, first, last, numberOfElements, sort, empty
+Notes and defaults
+
+
+## GET /api/bookings/{referenceCode}
+
+- Purpose: Fetch a single booking by its reference code (only your own).
+- Auth: Required
+- Path params:
+  - referenceCode: string (24 hex)
+- Response: 200 OK (BookingResponse)
+  - bookingId: number
+  - referenceCode: string
+  - scheduleId: number
+  - bookingDate: string (ISO timestamp)
+  - status: string ("CONFIRMED" | "CANCELLED")
+  - passengers: array of { name, age }
+  - totalPrice: number (decimal as string in JSON)
+- Errors:
+  - 400 Bad Request
+    - Booking not found (invalid or not owned by current user)
+  - 401 Unauthorized
+    - Missing/invalid JWT
+  - 500 Internal Server Error
+
+Note:
+- We intentionally return “Booking not found” as 400 to avoid leaking info. If you’d prefer 404, we can adjust the handler.
+
+## DELETE /api/bookings/{referenceCode}
+
+- Purpose: Cancel a booking (only your own) and restore seats.
+- Auth: Required
+- Path params:
+  - referenceCode: string (24 hex)
+- Response: 204 No Content
+  - Idempotent: If already cancelled, still returns 204.
+- Errors:
+  - 400 Bad Request
+    - Booking not found (invalid or not owned by current user)
+  - 401 Unauthorized
+    - Missing/invalid JWT
+  - 500 Internal Server Error
+
+## Validation summary
+
+- CreateBookingRequest:
+  - scheduleId: @NotNull
+  - passengers: @NotEmpty, @Valid
+- PassengerDTO:
+  - name: @NotBlank
+  - age: @Min(0)
+- Validation errors are returned as 400 with a structure:
+  - {
+      "error": "Validation failed",
+      "details": {
+        "passengers[0].name": "must not be blank",
+        "scheduleId": "must not be null"
+      }
+    }

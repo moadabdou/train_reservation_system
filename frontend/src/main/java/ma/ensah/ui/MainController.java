@@ -5,6 +5,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
 import ma.ensah.config.Config;
 import ma.ensah.config.Session;
 import ma.ensah.model.Schedule;
@@ -31,6 +34,9 @@ public class MainController {
     @FXML private Button headerLoginBtn;
     @FXML private Button headerRegisterBtn;
     @FXML private Button headerLogoutBtn;
+    // Side panel UI
+    @FXML private Label fabMenu;
+    @FXML private VBox sidePanel;
 
     private StationService stationService;
     private ScheduleService scheduleService;
@@ -41,6 +47,7 @@ public class MainController {
         ApiClient api = new ApiClient(Config.apiBaseUrl());
         this.stationService = new StationService(api);
         this.scheduleService = new ScheduleService(api);
+    // booking service not needed; using ApiClient directly for simple calls
 
         // Setup train list with custom cells
         trainList.setItems(data);
@@ -63,6 +70,7 @@ public class MainController {
         });
 
         updateHeaderButtons();
+        setupSidePanel();
     }
 
     @FXML
@@ -142,5 +150,48 @@ public class MainController {
             headerLogoutBtn.setVisible(authed);
             headerLogoutBtn.setManaged(authed);
         }
+        // For the current focus on the side sliding window, make the left tab always visible
+        if (fabMenu != null) {
+            fabMenu.setVisible(true);
+            fabMenu.setManaged(true);
+            fabMenu.setText("❯"); // initial arrow pointing right (closed state)
+        }
     }
+
+    private void setupSidePanel() {
+        if (sidePanel != null) {
+            double hiddenX = -Math.max(240, sidePanel.getPrefWidth());
+            sidePanel.setTranslateX(hiddenX); // hide off-screen left by its width
+            sidePanel.setVisible(false);
+            sidePanel.setManaged(false);
+        }
+        // drawer is now just a launcher; no content listeners needed here
+    }
+
+    @FXML
+    public void toggleSidePanel() {
+        if (sidePanel == null) return;
+        boolean opening = sidePanel.getTranslateX() < 0;
+        if (opening) { sidePanel.setVisible(true); sidePanel.setManaged(true); }
+        double hiddenX = -Math.max(240, sidePanel.getPrefWidth());
+        double target = opening ? 0 : hiddenX;
+        TranslateTransition tt = new TranslateTransition(Duration.millis(220), sidePanel);
+        tt.setToX(target);
+        tt.setOnFinished(e -> {
+            if (!opening) { sidePanel.setVisible(false); sidePanel.setManaged(false); }
+            if (fabMenu != null) {
+                fabMenu.setText(opening ? "❮" : "❯");
+            }
+        });
+        tt.play();
+    }
+
+    @FXML
+    public void openMyBookings() {
+        if (!Session.isAuthenticated()) { showError("Please log in to view bookings."); return; }
+        Navigation.goTo((javafx.stage.Stage) searchBtn.getScene().getWindow(), "/views/BookingsView.fxml");
+    }
+
+    // Booking UI moved to dedicated page
+
 }

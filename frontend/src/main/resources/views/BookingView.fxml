@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ma.ensah.ui.BookingController" styleClass="root">
+
+    <!-- Header -->
+    <HBox styleClass="header" alignment="CENTER_LEFT" spacing="12">
+        <padding><Insets top="12" right="20" bottom="12" left="20" /></padding>
+        <Label text="🚄" styleClass="logo-icon" onMouseClicked="#goHome"/>
+        <Label text="TrainReserve" styleClass="brand" onMouseClicked="#goHome"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="Back" styleClass="btn-secondary" onAction="#goBack"/>
+    </HBox>
+
+    <!-- Content -->
+    <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+        <VBox styleClass="content-area" maxWidth="960" prefWidth="720" spacing="18">
+            <padding><Insets top="32" right="20" bottom="24" left="20" /></padding>
+
+            <Label text="Booking Details" styleClass="card-title">
+                <font><Font name="System Bold" size="14" /></font>
+            </Label>
+
+            <VBox styleClass="search-card" spacing="16">
+                <padding><Insets top="18" right="20" bottom="18" left="20" /></padding>
+
+                <VBox spacing="4">
+                    <Label fx:id="scheduleRouteLabel" styleClass="section-title"/>
+                    <Label fx:id="scheduleMetaLabel" styleClass="meta-text"/>
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Passengers" styleClass="input-label"/>
+                    <Button text="+ Add passenger" styleClass="btn-secondary" onAction="#addPassenger"/>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="passenger-scroll">
+                    <content>
+                        <VBox fx:id="passengerList" spacing="10">
+                            <padding><Insets top="10" right="12" bottom="10" left="12"/></padding>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label fx:id="passengerCountLabel" styleClass="input-label"/>
+                    <Label text="•" styleClass="input-label"/>
+                    <Label text="Estimated total:" styleClass="input-label"/>
+                    <Label fx:id="totalPriceLabel" styleClass="section-title"/>
+                </HBox>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <Button text="Cancel" styleClass="btn-secondary" onAction="#goBack"/>
+                    <Button fx:id="confirmBtn" text="Confirm Booking" styleClass="btn-primary" onAction="#confirmBooking"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </HBox>
+</VBox>
