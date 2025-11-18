@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+target/
+build/
+dist/
+out/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated files
+*.class
+*.jar
+*.war
+*.ear
+
+# Don't format these specific files
+package-lock.json
+yarn.lock
+pom.xml

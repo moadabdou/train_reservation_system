@@ -1,4 +1,4 @@
-module ma.ensah {
+module me.ensah {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;
@@ -9,9 +9,12 @@ module ma.ensah {
     requires com.fasterxml.jackson.datatype.jsr310;
 
     // FXML needs reflective access
-    opens ma.ensah.ui to javafx.fxml;
+    opens me.ensah.ui to javafx.fxml;
+    opens me.ensah.ui.components to javafx.fxml;
+    opens me.ensah.ui.controllers to javafx.fxml;
     // Jackson needs reflective access to model classes
-    opens ma.ensah.model to com.fasterxml.jackson.databind;
+    opens me.ensah.model to com.fasterxml.jackson.databind;
 
-    exports ma.ensah;
+    exports me.ensah;
+    exports me.ensah.ui.components;
 }

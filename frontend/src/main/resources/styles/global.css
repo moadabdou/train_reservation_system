@@ -1,0 +1,23 @@
+/* Note: JavaFX CSS does not support CSS custom properties (variables) like :root and var()
+   These are kept for reference but actual values must be used in stylesheets */
+
+
+/* Header Styles */
+/* .header {
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 0, 2);
+}
+
+.header .logo-icon {
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
+}
+
+.header .brand {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #df4e00;
+    -fx-cursor: hand;
+} */

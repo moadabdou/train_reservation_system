@@ -1,0 +1,32 @@
+{
+  "printWidth": 120,
+  "tabWidth": 4,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "*.java",
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "useTabs": false,
+        "parser": "java"
+      }
+    },
+    {
+      "files": ["*.xml", "*.fxml"],
+      "options": {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "useTabs": false,
+        "xmlWhitespaceSensitivity": "ignore",
+        "parser": "xml"
+      }
+    }
+  ]
+}

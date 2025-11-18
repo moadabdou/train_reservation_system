@@ -29,11 +29,11 @@ mvn javafx:run
 ```
 
 ## Project structure
-- `ma.ensah.model` – DTOs (`Station`, `Schedule`)
-- `ma.ensah.net.ApiClient` – HttpClient + Jackson
-- `ma.ensah.services` – `StationService`, `ScheduleService`
-- `ma.ensah.ui.MainController` – UI logic
-- `resources/views/MainView.fxml` – UI layout
+- `me.ensah.model` – DTOs (`Station`, `Schedule`)
+- `me.ensah.net.ApiClient` – HttpClient + Jackson
+- `me.ensah.services` – `StationService`, `ScheduleService`
+- `me.ensah.ui.MainController` – UI logic
+- `resources/fxml/MainView.fxml` – UI layout
 - `resources/styles/main.css` – styles
 
 ## Notes

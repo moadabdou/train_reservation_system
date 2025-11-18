@@ -1,0 +1,88 @@
+{
+    // ==================== JAVA CONFIGURATION ====================
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic",
+    
+    // ==================== PRETTIER CONFIGURATION ====================
+    // Enables format on save for all files
+    "editor.formatOnSave": true,
+    
+    // Set Prettier as the default formatter
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    
+    // Format on paste
+    "editor.formatOnPaste": true,
+    
+    // Format on type (formats as you type)
+    "editor.formatOnType": false,
+    
+    // ==================== JAVA SPECIFIC SETTINGS ====================
+    // Use Prettier for Java files
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    },
+    
+    // ==================== XML/FXML SPECIFIC SETTINGS ====================
+    // Use Prettier for XML and FXML files
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    },
+    
+    // ==================== JAVASCRIPT/TYPESCRIPT SETTINGS ====================
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    
+    // ==================== MARKDOWN SETTINGS ====================
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.wordWrap": "on"
+    },
+    
+    // ==================== PRETTIER SETTINGS ====================
+    "prettier.requireConfig": false,
+    "prettier.useEditorConfig": false,
+    "prettier.printWidth": 120,
+    "prettier.tabWidth": 4,
+    "prettier.useTabs": false,
+    
+    // ==================== JAVA LANGUAGE SERVER SETTINGS ====================
+    "java.format.enabled": true,
+    
+    // ==================== XML FORMATTING SETTINGS ====================
+    "xml.format.enabled": true,
+    "xml.format.splitAttributes": false,
+    "xml.format.joinCDATALines": false,
+    "xml.format.joinCommentLines": false,
+    "xml.format.joinContentLines": false,
+    "xml.format.spaceBeforeEmptyCloseTag": true,
+    "xml.format.preserveEmptyContent": false,
+    
+    // ==================== FILE ASSOCIATIONS ====================
+    "files.associations": {
+        "*.fxml": "xml"
+    }
+}

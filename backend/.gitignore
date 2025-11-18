@@ -32,3 +32,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# mohssine: i have the maven istalled globally on my machine
+# if maven installed globally no need for wrapper
+mvnw
+mvnw.cmd
+.mvn/*
+
+
