@@ -1,3 +1,61 @@
+/* javafx elemtns stylings */
+.whiteCard{
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 15;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0, 0, 3);
+}
+
+/* Table Styling */
+.styled-table {
+    -fx-background-color: white;
+    -fx-font-size: 14px;
+    -fx-table-cell-border-color: #e5e7eb;
+    -fx-text-fill: #374151;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+}
+
+.styled-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f3f4f6;
+    -fx-border-width: 0 0 1 0;
+}
+
+.styled-table .table-row-cell:hover {
+    -fx-background-color: #f9fafb;
+}
+
+.styled-table .table-row-cell:selected {
+    -fx-background-color: #fed7aa;
+}
+
+.styled-table .column-header {
+    -fx-background-color: #f97316;
+    -fx-background-radius: 15 15 0 0;
+    -fx-border: none;
+
+    -fx-font-weight: 600;
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-padding: 16 20 16 20;
+}
+
+.styled-table .table-cell {
+    -fx-padding: 12 20 12 20;
+}
+
+/* Remove focus styling from containers */
+.search-container:focused,
+.main-container:focused {
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb;
+}
+
 /* Note: JavaFX CSS does not support CSS custom properties (variables) like :root and var()
    These are kept for reference but actual values must be used in stylesheets */
 

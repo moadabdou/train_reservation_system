@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="me.ensah.ui.controllers.MainLayoutController"
+    stylesheets="@../styles/global.css"
+    style="-fx-background-color: white;"
+>
+
+    <padding>
+        <Insets top="7" right="7" bottom="7" left="0" />
+    </padding>
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <fx:include fx:id="sidebarComponent" source="sidebar.fxml" />
+    </left>
+
+    <!-- CENTER AREA -->
+    <center>
+        <BorderPane fx:id="centerBorder" style="-fx-background-color: white;" >
+            <!-- let add some padding -->
+            <padding>
+                <Insets top="0" right="0" bottom="0" left="7" />
+            </padding>
+
+            <!-- Fixed Header at the top -->
+            <top>
+                <fx:include fx:id="headerComponent" source="header.fxml" />
+            </top>
+
+            <!-- Scrollable content below -->
+            <center>
+                <ScrollPane fitToWidth="true"
+                    style="-fx-background-color: white; -fx-border: none;">
+
+                    <padding>
+                        <Insets top="10" right="0" bottom="0" left="0" />
+                    </padding>
+                    <VBox spacing="5" style="-fx-background-color: white;">
+                        <!-- Page Header Component (scrolls with content) -->
+                        <fx:include fx:id="pageHeaderComponent" source="pageHeader.fxml"
+                            style="-fx-padding: 10px;" />
+
+                        <!-- Main Content Area -->
+                        <StackPane fx:id="mainContent" styleClass="whiteCard" VBox.vgrow="ALWAYS" />
+                    </VBox>
+                </ScrollPane>
+            </center>
+
+        </BorderPane>
+
+    </center>
+
+</BorderPane>

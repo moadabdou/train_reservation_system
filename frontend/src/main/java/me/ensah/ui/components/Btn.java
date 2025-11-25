@@ -75,9 +75,9 @@ public class Btn extends Button {
         if ("SMALL".equals(size)) {
             s.append("-fx-padding: 4px 12px; -fx-font-size: 12px;");
         } else if ("MEDIUM".equals(size)) {
-            s.append("-fx-padding: 6px 16px; -fx-font-size: 13px;");
+            s.append("-fx-padding: 8px 18px; -fx-font-size: 14px;");
         } else if ("LARGE".equals(size)) {
-            s.append("-fx-padding: 10px 24px; -fx-font-size: 15px;");
+            s.append("-fx-padding: 10px 30px; -fx-font-size: 15px;");
         }
 
         return s.toString();

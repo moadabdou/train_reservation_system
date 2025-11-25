@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<?import me.ensah.ui.components.Btn?>
+<?import me.ensah.ui.components.StyledTable?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:id="mainBorderPane"
+    fx:controller="me.ensah.ui.controllers.UsersManagementController"
+    stylesheets="@../styles/global.css"
+    styleClass="main-container">
+    <padding>
+        <Insets top="5" right="5" bottom="5" left="5" />
+    </padding>
+
+    <ScrollPane fitToWidth="true"
+        style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox spacing="10" style="-fx-background-color: transparent;">
+
+              <!-- Statistics Section -->
+            <HBox spacing="15">
+                <VBox styleClass="whiteCard" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20" />
+                    </padding>
+                    <Label fx:id="totalClientsLabel" text="0"
+                        style="-fx-font-size: 24px; 
+                               -fx-font-weight: bold; 
+                               -fx-text-fill: #f97316;" />
+                    <Label text="Total Clients"
+                        style="-fx-font-size: 12px; 
+                               -fx-text-fill: #6b7280;" />
+                </VBox>
+
+                <VBox styleClass="whiteCard" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20" />
+                    </padding>
+                    <Label fx:id="totalBookingsLabel" text="0"
+                        style="-fx-font-size: 24px; 
+                               -fx-font-weight: bold; 
+                               -fx-text-fill: #06b6d4;" />
+                    <Label text="Total Bookings"
+                        style="-fx-font-size: 12px; 
+                               -fx-text-fill: #6b7280;" />
+                </VBox>
+            </HBox>
+
+            <!-- Search Bar Section -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="search-container">
+                <padding>
+                    <Insets top="15" right="0" bottom="5" left="0" />
+                </padding>
+                <TextField fx:id="searchField"
+                    promptText="Search by name or email..."
+                    style="-fx-font-size: 14px; 
+                           -fx-padding: 10px; 
+                           -fx-border-radius: 6; 
+                           -fx-background-radius: 6;
+                           -fx-border-color: #e5e7eb;
+                           -fx-focus-color: #f97316;
+                           -fx-background-color: white;"
+                    HBox.hgrow="ALWAYS" />
+                <Btn text="Search" type="PRIMARY" size="MEDIUM" onAction="#handleSearch" />
+                <Btn text="Reset" type="SECONDARY" size="MEDIUM" onAction="#handleReset" />
+            </HBox>
+
+          
+
+            <!-- Clients Table Section -->
+            <!-- <VBox spacing="10" styleClass="whiteCard">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20" />
+                </padding> -->
+
+            <StyledTable fx:id="clientsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn text="ID" prefWidth="60" sortable="true">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="id" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <TableColumn text="Name" prefWidth="150" sortable="true">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="name" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <TableColumn text="Email" prefWidth="200" sortable="true">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="email" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <TableColumn text="Created Date" prefWidth="150" sortable="true">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="createdAt" />
+                        </cellValueFactory>
+                    </TableColumn>
+
+                    <TableColumn text="Total Bookings" prefWidth="120" sortable="true">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="totalBookings" />
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </StyledTable>
+            <!-- </VBox> -->
+
+            <!-- Pagination Section -->
+            <HBox spacing="10" alignment="CENTER" styleClass="whiteCard">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20" />
+                </padding>
+
+                <Button text="Previous"
+                    fx:id="prevBtn"
+                    onAction="#handlePrevious"
+                    style="-fx-font-size: 12px; 
+                           -fx-padding: 8px 16px; 
+                           -fx-background-color: #e5e7eb; 
+                           -fx-text-fill: #374151; 
+                           -fx-border-radius: 4; 
+                           -fx-background-radius: 4;
+                           -fx-cursor: hand;
+                           -fx-focus-color: transparent;" />
+                <Label fx:id="pageInfoLabel" text="Page 1"
+                    style="-fx-font-size: 12px; 
+                           -fx-text-fill: #6b7280;" />
+                <Button text="Next"
+                    fx:id="nextBtn"
+                    onAction="#handleNext"
+                    style="-fx-font-size: 12px; 
+                           -fx-padding: 8px 16px; 
+                           -fx-background-color: #f97316; 
+                           -fx-text-fill: white; 
+                           -fx-border-radius: 4; 
+                           -fx-background-radius: 4;
+                           -fx-cursor: hand;
+                           -fx-focus-color: transparent;" />
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+</StackPane>

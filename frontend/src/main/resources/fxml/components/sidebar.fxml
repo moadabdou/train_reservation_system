@@ -22,9 +22,8 @@
     prefWidth="270"
     minWidth="80"
     spacing="16"
-    alignment="TOP_CENTER">  <!-- Changed to TOP_CENTER for better collapsed alignment -->
+    alignment="TOP_CENTER">
 
-    <!-- Header Section -->
     <VBox alignment="CENTER" spacing="12" style="-fx-padding: 20 14 14 14;" prefHeight="80">
         <!-- Text Box - Visible when expanded -->
         <VBox fx:id="headerTextBox" alignment="CENTER">
@@ -57,13 +56,9 @@
         <!-- Menu items will be created programmatically -->
     </VBox>
 
-    <!-- Footer Section with Logout -->
+
+    <!-- sidebar footer -->
     <VBox style="-fx-padding: 14;" spacing="8" alignment="CENTER">  <!-- Added CENTER -->
-        <SidebarItem fx:id="logoutSidebarItem" text="Logout" icon="/icons/logout.svg">
-            <HBox.margin>
-                <Insets top="0" bottom="0" left="0" right="0" />
-            </HBox.margin>
-        </SidebarItem>
         <Label text="v1.0.0"
             style="-fx-text-fill: #9ca3af; -fx-font-size: 10px; -fx-alignment: center;"
             HBox.hgrow="ALWAYS" />

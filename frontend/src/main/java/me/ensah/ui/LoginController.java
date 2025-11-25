@@ -29,7 +29,7 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        toRegisterLink.setOnAction(e -> Navigation.goTo(stage(), "/fxml/RegisterView.fxml"));
+        toRegisterLink.setOnAction(e -> Navigation.goTo(stage(), "/fxml/LoginView.fxml"));
         updateHeaderButtons();
     }
 
@@ -89,7 +89,7 @@ public class LoginController {
                     if (Session.isAdmin()) {
                         // If user is admin, go to Admin Dashboard
                         System.out.println("Admin logged in: " + Session.getCurrentUser().getName());
-                        Navigation.goTo(stage(), "/fxml/AdminDashboard.fxml");
+                        Navigation.goTo(stage(), "/fxml/components/mainLayout.fxml");
                     } else {
                         // If user is client, go to Main View (booking page)
                         System.out.println("Client logged in: " + Session.getCurrentUser().getName());
@@ -113,15 +113,15 @@ public class LoginController {
     // Quick login methods for development
     @FXML
     public void quickAdminLogin() {
-        emailField.setText("mohssine@gmail.com");
-        passwordField.setText("mohssine");
+        emailField.setText("admin@gmail.com");
+        passwordField.setText("admin");
         onSubmit();
     }
 
     @FXML
     public void quickClientLogin() {
-        emailField.setText("a@a.com");
-        passwordField.setText("a");
+        emailField.setText("client@gmail.com");
+        passwordField.setText("client");
         onSubmit();
     }
 

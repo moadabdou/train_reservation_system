@@ -12,9 +12,11 @@ module me.ensah {
     opens me.ensah.ui to javafx.fxml;
     opens me.ensah.ui.components to javafx.fxml;
     opens me.ensah.ui.controllers to javafx.fxml;
-    // Jackson needs reflective access to model classes
-    opens me.ensah.model to com.fasterxml.jackson.databind;
+    // Jackson and JavaFX need reflective access to model classes
+    opens me.ensah.model to com.fasterxml.jackson.databind, javafx.base;
 
     exports me.ensah;
     exports me.ensah.ui.components;
 }
+
+// this file is for :

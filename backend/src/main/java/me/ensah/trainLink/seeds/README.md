@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `DataInitializer` class is a comprehensive database seeder for the TrainLink application. It automatically populates the database with realistic test data when the application starts.
+The `DatabaseSeeder` class is a comprehensive database seeder for the TrainLink application. It automatically populates the database with realistic test data when the application starts.
 
 ## What Gets Seeded
 
@@ -152,7 +152,7 @@ Different types of trains with varying capacities:
 
 ### 1. Dependency Injection
 ```java
-public DataInitializer(
+public DatabaseSeeder(
     StationRepository stationRepository, 
     TrainRepository trainRepository, 
     ScheduleRepository scheduleRepository,

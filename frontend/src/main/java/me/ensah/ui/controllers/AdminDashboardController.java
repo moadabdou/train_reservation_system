@@ -64,11 +64,6 @@ public class AdminDashboardController {
      */
     @FXML
     public void initialize() {
-        // Connect header and sidebar controllers
-        if (headerComponentController != null && sidebarComponentController != null) {
-            headerComponentController.setSidebarController(sidebarComponentController);
-        }
-
         // Load dashboard statistics
         // Bind header width to ScrollPane width
         // stickyHeaderPane.prefWidthProperty().bind(scrollContent.widthProperty());

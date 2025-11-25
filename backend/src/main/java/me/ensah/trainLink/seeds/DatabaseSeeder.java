@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class DataInitializer implements CommandLineRunner {
+public class DatabaseSeeder implements CommandLineRunner {
 
     private final StationRepository stationRepository;
     private final TrainRepository trainRepository;
@@ -30,7 +30,7 @@ public class DataInitializer implements CommandLineRunner {
 
     // Spring will automatically inject the repositories here (Constructor
     // Injection)
-    public DataInitializer(StationRepository stationRepository, TrainRepository trainRepository,
+    public DatabaseSeeder(StationRepository stationRepository, TrainRepository trainRepository,
             ScheduleRepository scheduleRepository, UserRepository userRepository,
             PasswordEncoder passwordEncoder) {
         this.stationRepository = stationRepository;
@@ -47,21 +47,21 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("🌱 Seeding database with initial users...");
 
             // Create admin user with encoded password
-            if (userRepository.findByEmail("mohssine@gmail.com").isEmpty()) {
-                // Email: mohssine@gmail.com, Password: mohssine
-                User admin = new User(null, "Admin User", "mohssine@gmail.com",
-                        passwordEncoder.encode("mohssine"), "admin");
+            if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+                // Email: admin@gmail.com, Password: admin
+                User admin = new User(null, "Admin User", "admin@gmail.com",
+                        passwordEncoder.encode("admin"), "admin");
                 userRepository.save(admin);
-                System.out.println("✅ Admin user created: mohssine@gmail.com / mohssine");
+                System.out.println("✅ Admin user created: admin@gmail.com / admin");
             }
 
             // Create a regular client user for testing
             if (userRepository.findByEmail("client@trainlink.com").isEmpty()) {
-                // Email: client@trainlink.com, Password: mohssine
+                // Email: client@trainlink.com, Password: client
                 User client = new User(null, "Client User", "client@trainlink.com",
-                        passwordEncoder.encode("mohssine"), "client");
+                        passwordEncoder.encode("client"), "client");
                 userRepository.save(client);
-                System.out.println("✅ Client user created: client@trainlink.com / mohssine");
+                System.out.println("✅ Client user created: client@trainlink.com / client");
             }
 
         } else {

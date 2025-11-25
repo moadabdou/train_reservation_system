@@ -6,12 +6,13 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.shape.Line?>
 <StackPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="me.ensah.ui.MainController" styleClass="root" style="-fx-padding: 12;">
+    fx:controller="me.ensah.ui.MainController"
+    styleClass="root" style="-fx-padding: 12;">
 
     <!-- Main column content -->
     <VBox StackPane.alignment="CENTER">
         <!-- Header Component -->
-        <fx:include fx:id="header" source="components/header.fxml"/>
+        <fx:include fx:id="header" source="components/header.fxml" />
 
         <!-- Main Content -->
         <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
