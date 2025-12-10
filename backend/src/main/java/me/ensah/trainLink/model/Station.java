@@ -21,4 +21,13 @@ public class Station {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "description", length = 1000)
+    private String description;
 }

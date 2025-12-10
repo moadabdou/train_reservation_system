@@ -1,0 +1,107 @@
+:root {
+  /* Color Palette: "Markoub Style" */
+  --color-primary: #0056b3;       /* Markoub Blue */
+  --color-primary-dark: #004494;
+  --color-secondary: #ffc107;     /* Action Yellow */
+  --color-secondary-hover: #e0a800;
+  --color-background: #f8f9fa;    /* Light Gray Background */
+  --color-surface: #ffffff;       /* White Surface */
+  --color-text-main: #212529;     /* Dark Text */
+  --color-text-light: #6c757d;    /* Muted Text */
+  --color-border: #dee2e6;
+
+  /* Typography */
+  --font-family-main: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  --font-family-mono: 'Consolas', monospace;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.text-center { text-align: center; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.text-secondary { color: var(--color-text-light); }
+.text-gray-500 { color: #6b7280; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-main);
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+.results-section {
+  margin-top: 80px;
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-md);
+  padding-left: var(--spacing-xs); /* Slight alignment adjustment */
+}
+
+/* Utility Classes */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.bg-primary { background-color: var(--color-primary); }
+.bg-white { background-color: var(--color-white); }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); }
+
+.font-bold { font-weight: 700; }
+.font-mono { font-family: var(--font-family-mono); }

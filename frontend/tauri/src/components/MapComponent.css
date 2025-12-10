@@ -1,0 +1,81 @@
+.pulsing-icon {
+    background: transparent;
+    border: none;
+}
+
+.pulse {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #2196f3;
+    position: relative;
+    border: 2px solid white;
+    box-shadow: 0 0 0 rgba(33, 150, 243, 0.4);
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% {
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(33, 150, 243, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+    }
+}
+
+.station-popup .leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 0;
+}
+
+.station-popup .leaflet-popup-content {
+    margin: 0;
+    width: 280px !important;
+}
+
+.station-popup-content {
+    padding: 12px;
+}
+
+.station-popup-content h3 {
+    margin: 0 0 8px 0;
+    color: #0056b3;
+    font-size: 1.1rem;
+}
+
+.station-popup-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.station-description {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.station-fun-fact {
+    background-color: #f0f7ff;
+    border-left: 3px solid #0056b3;
+    padding: 8px;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.85rem;
+}
+
+.station-fun-fact strong {
+    display: block;
+    color: #0056b3;
+    margin-bottom: 2px;
+}
+
+.station-fun-fact p {
+    margin: 0;
+    color: #333;
+}

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import me.ensah.trainLink.model.Train;
 
-
-
 @Repository
-public interface TrainRepository extends JpaRepository<Train, Long> {}
+public interface TrainRepository extends JpaRepository<Train, Long> {
+    Train findByName(String name);
+}

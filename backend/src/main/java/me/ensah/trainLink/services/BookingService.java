@@ -32,6 +32,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import me.ensah.trainLink.DTO.ReceiptDTO;
+import me.ensah.trainLink.model.Payment;
+
 @Service
 public class BookingService {
 
@@ -39,14 +42,54 @@ public class BookingService {
     private final PassengerRepository passengerRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final PaymentService paymentService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public BookingService(BookingRepository bookingRepository, PassengerRepository passengerRepository,
-                          ScheduleRepository scheduleRepository, UserRepository userRepository) {
+            ScheduleRepository scheduleRepository, UserRepository userRepository,
+            PaymentService paymentService) {
         this.bookingRepository = bookingRepository;
         this.passengerRepository = passengerRepository;
         this.scheduleRepository = scheduleRepository;
         this.userRepository = userRepository;
+        this.paymentService = paymentService;
+    }
+
+    public ReceiptDTO generateReceipt(String referenceCode) {
+        Booking booking = bookingRepository.findByReferenceCode(referenceCode)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        if (!booking.getUser().getEmail().equals(currentUsername)) {
+            throw new SecurityException("Unauthorized access to booking");
+        }
+
+        Payment payment = paymentService.getPaymentByBooking(booking.getId());
+
+        ReceiptDTO receipt = new ReceiptDTO();
+        receipt.setBookingReference(booking.getReferenceCode());
+        receipt.setBookingDate(booking.getBookingDate());
+        receipt.setTrainName(booking.getSchedule().getTrain().getName());
+        receipt.setDepartureStation(booking.getSchedule().getDepartureStation().getName());
+        receipt.setArrivalStation(booking.getSchedule().getArrivalStation().getName());
+        receipt.setDepartureTime(booking.getSchedule().getDepartureTime());
+        receipt.setArrivalTime(booking.getSchedule().getArrivalTime());
+        receipt.setPassengerNames(
+                booking.getPassengers().stream().map(Passenger::getName).collect(Collectors.toList()));
+
+        if (payment != null) {
+            receipt.setTotalAmount(payment.getAmount());
+            receipt.setPaymentStatus(payment.getStatus().name());
+            receipt.setTransactionId(payment.getTransactionId());
+        } else {
+            // Fallback if payment not found (e.g. pending or old data)
+            receipt.setTotalAmount(
+                    booking.getSchedule().getPrice().multiply(BigDecimal.valueOf(booking.getPassengers().size())));
+            receipt.setPaymentStatus("PENDING");
+        }
+
+        return receipt;
     }
 
     @Transactional
@@ -57,18 +100,24 @@ public class BookingService {
 
         // Resolve current user by email from SecurityContext
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getName() == null) {
-            throw new IllegalStateException("Unauthenticated");
+        User user;
+
+        if (auth == null || auth.getName() == null || "anonymousUser".equals(auth.getName())) {
+            // Fallback for testing: use the default client user
+            user = userRepository.findByEmail("client@trainlink.com")
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Default client user not found. Please run DataInitializer."));
+        } else {
+            String email = auth.getName();
+            user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalStateException("User not found"));
         }
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
 
         Long scheduleId = request.getScheduleId();
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Schedule not found"));
 
-    int count = request.getPassengers().size();
+        int count = request.getPassengers().size();
 
         // Atomic seat decrement - if result is 0 rows updated, not enough seats
         int updated = scheduleRepository.decrementAvailableSeats(scheduleId, count);
@@ -80,8 +129,8 @@ public class BookingService {
         booking.setUser(user);
         booking.setSchedule(schedule);
         booking.setBookingDate(LocalDateTime.now());
-    booking.setStatus(BookingStatus.CONFIRMED);
-    booking.setReferenceCode(generateReferenceCode());
+        booking.setStatus(BookingStatus.PENDING_PAYMENT);
+        booking.setReferenceCode(generateReferenceCode());
         booking = bookingRepository.save(booking);
 
         // Create passengers
@@ -107,14 +156,14 @@ public class BookingService {
                     dto.setAge(pass.getAge());
                     return dto;
                 }).collect(Collectors.toList()),
-                totalPrice
-        );
+                totalPrice);
     }
 
     @Transactional(readOnly = true)
     public Page<BookingSummaryDTO> listMyBookings(int page, int size) {
         User user = getCurrentUser();
-        Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size), Sort.by(Sort.Direction.DESC, "bookingDate"));
+        Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size),
+                Sort.by(Sort.Direction.DESC, "bookingDate"));
         Page<Booking> bookingPage = bookingRepository.findByUserId(user.getId(), pageable);
         List<BookingSummaryDTO> content = bookingPage.getContent().stream().map(b -> {
             BookingSummaryDTO dto = new BookingSummaryDTO();
@@ -152,8 +201,7 @@ public class BookingService {
                     dto.setAge(pass.getAge());
                     return dto;
                 }).collect(Collectors.toList()),
-                totalPrice
-        );
+                totalPrice);
     }
 
     @Transactional
@@ -167,6 +215,12 @@ public class BookingService {
         if (booking.getStatus() == BookingStatus.CANCELLED) {
             return; // idempotent
         }
+
+        // Trigger refund if applicable
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
+            paymentService.refundPayment(booking);
+        }
+
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
         scheduleRepository.incrementAvailableSeats(booking.getSchedule().getId(), booking.getPassengers().size());

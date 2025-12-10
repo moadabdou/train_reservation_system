@@ -21,8 +21,15 @@ public class StationService {
     public List<StationDTO> getAllStations() {
         List<Station> stations = stationRepository.findAll();
         return stations.stream()
-                       .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
-                       .map(s -> new StationDTO(s.getId(), s.getName()))
-                       .collect(Collectors.toList());
+                .sorted((a, b) -> a.getName().compareToIgnoreCase(b.getName()))
+                .map(s -> new StationDTO(s.getId(), s.getName(), s.getLatitude(), s.getLongitude(), s.getDescription()))
+                .collect(Collectors.toList());
+    }
+
+    public StationDTO getStationInfo(Long id) {
+        Station station = stationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Station not found"));
+        return new StationDTO(station.getId(), station.getName(), station.getLatitude(), station.getLongitude(),
+                station.getDescription());
     }
 }

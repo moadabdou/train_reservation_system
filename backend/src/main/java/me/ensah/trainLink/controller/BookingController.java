@@ -11,6 +11,8 @@ import me.ensah.trainLink.services.BookingService;
 
 import org.springframework.data.domain.Page;
 
+import me.ensah.trainLink.DTO.ReceiptDTO;
+
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
@@ -19,6 +21,11 @@ public class BookingController {
 
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
+    }
+
+    @GetMapping("/{referenceCode}/receipt")
+    public ResponseEntity<ReceiptDTO> getReceipt(@PathVariable String referenceCode) {
+        return ResponseEntity.ok(bookingService.generateReceipt(referenceCode));
     }
 
     @PostMapping

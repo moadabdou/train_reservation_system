@@ -12,37 +12,55 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
+
 import me.ensah.trainLink.repository.UserRepository;
 import me.ensah.trainLink.services.JwtService;
 
-@Configuration     
-@EnableWebSecurity 
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final UserRepository userRepository;
-    
+
     public SecurityConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter)
+            throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
 
-            .authorizeHttpRequests(authz -> authz
-                // Allow public access to registration, login, and schedule searching
-                .requestMatchers("/api/auth/**", "/api/schedules/**", "/api/stations").permitAll() 
-                // All other requests must be authenticated (user must be logged in)
-                .anyRequest().authenticated() 
-            )
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(authz -> authz
+                        // Allow public access to registration, login, and schedule searching
+                        .requestMatchers("/api/auth/**", "/api/schedules/**", "/api/stations", "/api/bookings/**")
+                        .permitAll()
+                        // All other requests must be authenticated (user must be logged in)
+                        .anyRequest().authenticated())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(
+                Arrays.asList("http://localhost:3000", "http://localhost:1420", "http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -61,9 +79,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(JwtService jwtService,
+            UserDetailsService userDetailsService) {
         return new JwtAuthenticationFilter(jwtService, userDetailsService);
     }
 
-    // No AuthenticationManager bean is required since login is handled manually and JWT secures endpoints.
+    // No AuthenticationManager bean is required since login is handled manually and
+    // JWT secures endpoints.
 }

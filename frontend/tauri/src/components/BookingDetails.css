@@ -1,0 +1,441 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.booking-details-modal {
+    padding: 0;
+}
+
+.details-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.details-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.details-header .reference {
+    font-family: var(--font-family-mono);
+    font-size: 1.1rem;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    align-self: flex-start;
+}
+
+.header-download-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-right: 32px; /* Space for close button */
+    backdrop-filter: blur(4px);
+}
+
+.header-download-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.header-download-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.modal-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    cursor: pointer;
+    color: white;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.journey-visual {
+    padding: 30px;
+    background: #f8f9fa;
+}
+
+.journey-station {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+}
+
+.station-icon {
+    flex-shrink: 0;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.station-icon.departure {
+    background: #d4edda;
+    color: #155724;
+}
+
+.station-icon.arrival {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.station-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.station-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.station-time {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.station-date {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.journey-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0 16px 44px;
+    border-left: 3px dashed var(--color-border);
+    margin-left: 17px;
+}
+
+.train-icon {
+    color: var(--color-primary);
+}
+
+.train-name {
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+
+.details-section {
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.details-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: var(--color-text-main);
+    margin-bottom: 16px;
+}
+
+.passengers-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.passenger-tag {
+    background: #e7f1ff;
+    color: var(--color-primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.payment-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.payment-row:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.payment-status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.payment-status.paid,
+.payment-status.confirmed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.payment-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.transaction-id {
+    font-family: var(--font-family-mono);
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+.total-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+}
+
+.total-amount span:first-child {
+    font-size: 1.1rem;
+}
+
+.total-amount .amount {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.details-actions {
+    padding: 24px 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.download-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-secondary);
+    color: var(--color-text-main);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.download-btn:hover {
+    background: var(--color-secondary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.download-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+    box-shadow: none;
+    transform: none;
+}
+
+.download-progress {
+    padding: 0 30px 30px 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: 999px;
+    transition: width 0.2s ease;
+}
+
+.progress-label {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    min-width: 40px;
+    text-align: right;
+}
+
+.loading-state,
+.error-state {
+    padding: 60px;
+    text-align: center;
+    color: var(--color-text-light);
+}
+
+.error-state button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.success-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    z-index: 20;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.download-success-popup {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    text-align: center;
+    position: relative;
+    width: 90%;
+    max-width: 320px;
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #adb5bd;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.popup-close:hover {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.success-icon-large {
+    color: #28a745;
+    margin-bottom: 16px;
+    display: inline-flex;
+    padding: 16px;
+    background: #d4edda;
+    border-radius: 50%;
+}
+
+.download-success-popup h3 {
+    margin: 0 0 8px 0;
+    color: #212529;
+    font-size: 1.25rem;
+}
+
+.download-success-popup p {
+    margin: 0 0 24px 0;
+    color: #6c757d;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.view-btn.primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(0,86,179,0.2);
+}
+
+.view-btn.primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,86,179,0.3);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

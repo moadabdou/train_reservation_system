@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import me.ensah.trainLink.DTO.StationDTO;
 import me.ensah.trainLink.services.StationService;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 @RestController
 @RequestMapping("/api/stations")
 public class StationController {
@@ -22,5 +24,10 @@ public class StationController {
     @GetMapping
     public List<StationDTO> getStations() {
         return stationService.getAllStations();
+    }
+
+    @GetMapping("/{id}/info")
+    public StationDTO getStationInfo(@PathVariable Long id) {
+        return stationService.getStationInfo(id);
     }
 }

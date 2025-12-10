@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import me.ensah.ui.components.Btn?>
+<StackPane xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="me.ensah.ui.controllers.HeaderController"
+    styleClass="header"
+    maxHeight="80"
+    minHeight="80"
+    prefHeight="80">
+
+
+    <HBox alignment="CENTER_LEFT"
+        spacing="20">
+
+        <!-- Padding for the header -->
+        <padding>
+            <Insets top="10" right="24" bottom="10" left="24" />
+        </padding>
+
+        <!-- Left side: Brand Logo/Name with improved styling -->
+        <HBox alignment="CENTER_LEFT" spacing="8">
+
+            <!-- <Btn
+                fx:id="toggleBtn" text=""
+                style="-fx-font-size: 20px;" type="PRIMARY" size="LARGE" /> -->
+            <Label fx:id="sidebarToggle" text="☰"
+                style="-fx-font-size: 20px; background-color: transparent; -fx-text-fill: #f97316; -fx-font-weight: bold;">
+            </Label>
+        </HBox>
+
+        <!-- Spacer to push right content to the right -->
+        <Region HBox.hgrow="ALWAYS" />
+
+        <!-- Right side: Help Icon and Login Button with better spacing -->
+        <HBox alignment="CENTER_RIGHT" spacing="16">
+
+            <!-- Login Button using Btn with improved styling -->
+            <Btn text="Login" size="LARGE" type="PRIMARY" fx:id="loginBtn"
+                style="-fx-min-width: 120px;" />
+
+        </HBox>
+    </HBox>
+</StackPane>

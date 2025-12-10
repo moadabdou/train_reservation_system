@@ -1,0 +1,82 @@
+.app-header {
+    background-color: var(--color-surface);
+    color: var(--color-text-main);
+    padding: var(--spacing-md) 0;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+
+.logo-text {
+    color: var(--color-primary);
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--color-text-main);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+}
+
+.nav-link:hover {
+    color: var(--color-primary);
+}
+
+.login-btn {
+    background-color: var(--color-primary);
+    color: white !important;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.user-name {
+    color: var(--color-text-main);
+    font-weight: 500;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-light);
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #fee2e2;
+    color: #c0392b;
+}
