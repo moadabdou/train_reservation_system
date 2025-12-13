@@ -39,7 +39,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authz -> authz
                         // Allow public access to registration, login, and schedule searching
-                        .requestMatchers("/api/auth/**", "/api/schedules/**", "/api/stations", "/api/bookings/**")
+                        .requestMatchers("/api/auth/**", "/api/schedules/**", "/api/stations/**", "/api/bookings/**",
+                                "/api/admin/**", "/uploads/**")
                         .permitAll()
                         // All other requests must be authenticated (user must be logged in)
                         .anyRequest().authenticated())

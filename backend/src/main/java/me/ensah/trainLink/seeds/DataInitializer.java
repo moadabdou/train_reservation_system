@@ -11,12 +11,14 @@ import me.ensah.trainLink.model.Station;
 import me.ensah.trainLink.model.Train;
 import me.ensah.trainLink.model.User;
 import me.ensah.trainLink.model.Reward;
+import me.ensah.trainLink.model.Provider;
 import me.ensah.trainLink.repository.RouteStopRepository;
 import me.ensah.trainLink.repository.ScheduleRepository;
 import me.ensah.trainLink.repository.StationRepository;
 import me.ensah.trainLink.repository.TrainRepository;
 import me.ensah.trainLink.repository.UserRepository;
 import me.ensah.trainLink.repository.RewardRepository;
+import me.ensah.trainLink.repository.ProviderRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,13 +35,14 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final RouteStopRepository routeStopRepository;
     private final RewardRepository rewardRepository;
+    private final ProviderRepository providerRepository;
 
     // Spring will automatically inject the repositories here (Constructor
     // Injection)
     public DataInitializer(StationRepository stationRepository, TrainRepository trainRepository,
             ScheduleRepository scheduleRepository, UserRepository userRepository,
             PasswordEncoder passwordEncoder, RouteStopRepository routeStopRepository,
-            RewardRepository rewardRepository) {
+            RewardRepository rewardRepository, ProviderRepository providerRepository) {
         this.stationRepository = stationRepository;
         this.trainRepository = trainRepository;
         this.scheduleRepository = scheduleRepository;
@@ -47,26 +50,25 @@ public class DataInitializer implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.routeStopRepository = routeStopRepository;
         this.rewardRepository = rewardRepository;
+        this.providerRepository = providerRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // Update coordinates for existing stations if they are missing
-        updateStationCoordinates();
+        try {
+            // Update coordinates for existing stations if they are missing
+            // updateStationCoordinates(); // Commented out to prevent connection issues for
+            // now
 
-        // Ensure Kenitra exists (it might be missing from initial seed)
-        Station kenitra = stationRepository.findByName("Kenitra");
-        if (kenitra == null) {
-            kenitra = new Station(null, "Kenitra", 34.2610, -6.5802, "Major transit hub");
-            kenitra = stationRepository.save(kenitra);
-            System.out.println("✅ Created missing station: Kenitra");
-        }
+            // Ensure Kenitra exists (it might be missing from initial seed)
+            Station kenitra = stationRepository.findByName("Kenitra");
+            if (kenitra == null) {
+                kenitra = new Station(null, "Kenitra", 34.2610, -6.5802, "Major transit hub", null, null);
+                kenitra = stationRepository.save(kenitra);
+                System.out.println("✅ Created missing station: Kenitra");
+            }
 
-        // Only add data if the database is empty to avoid duplicates on restart
-        if (userRepository.count() == 0) {
-            System.out.println("🌱 Seeding database with initial users...");
-
-            // Create admin user with encoded password
+            // Ensure Admin user exists
             if (userRepository.findByEmail("mohssine@gmail.com").isEmpty()) {
                 // Email: mohssine@gmail.com, Password: mohssine
                 User admin = new User(null, "Admin User", "mohssine@gmail.com",
@@ -75,7 +77,7 @@ public class DataInitializer implements CommandLineRunner {
                 System.out.println("✅ Admin user created: mohssine@gmail.com / mohssine");
             }
 
-            // Create a regular client user for testing
+            // Ensure Client user exists
             if (userRepository.findByEmail("client@trainlink.com").isEmpty()) {
                 // Email: client@trainlink.com, Password: mohssine
                 User client = new User(null, "Client User", "client@trainlink.com",
@@ -84,46 +86,65 @@ public class DataInitializer implements CommandLineRunner {
                 System.out.println("✅ Client user created: client@trainlink.com / mohssine");
             }
 
-        } else {
-            // Show existing users
-            System.out.println("📋 Existing users in database:");
-            userRepository.findAll().forEach(user -> {
-                System.out.println("  - " + user.getEmail() + " (role: " + user.getRole() + ")");
-            });
-        }
-        if (stationRepository.count() <= 5) { // Adjusted condition to allow seeding if only a few stations exist
-            System.out.println("🌱 Seeding database with initial data...");
-
+            // 0. Create Provider (ONCF)
+            Provider oncf = providerRepository.findByName("ONCF");
+            if (oncf == null) {
+                oncf = new Provider(null, "ONCF",
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/ONCF_Logo.svg/1200px-ONCF_Logo.svg.png",
+                        "contact@oncf.ma", null);
+                oncf = providerRepository.save(oncf);
+                System.out.println("✅ Created Provider: ONCF");
+            } else {
+                // Update logo if it's missing or different (optional, but good for fixing
+                // broken data)
+                oncf.setLogoUrl(
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/ONCF_Logo.svg/1200px-ONCF_Logo.svg.png");
+                providerRepository.save(oncf);
+                System.out.println("🔄 Updated Provider: ONCF logo");
+            }
             // 1. Create Stations (if not exist)
             Station casa = stationRepository.findByName("Casablanca Voyageurs");
             if (casa == null)
                 casa = stationRepository.save(
-                        new Station(null, "Casablanca Voyageurs", 33.5898, -7.5898, "Main station in Casablanca"));
+                        new Station(null, "Casablanca Voyageurs", 33.5898, -7.5898, "Main station in Casablanca", null,
+                                null));
 
             Station rabat = stationRepository.findByName("Rabat Agdal");
             if (rabat == null)
                 rabat = stationRepository
-                        .save(new Station(null, "Rabat Agdal", 34.0033, -6.8558, "Modern station in Rabat"));
+                        .save(new Station(null, "Rabat Agdal", 34.0033, -6.8558, "Modern station in Rabat", null,
+                                null));
 
             Station marrakech = stationRepository.findByName("Marrakech");
             if (marrakech == null)
                 marrakech = stationRepository
-                        .save(new Station(null, "Marrakech", 31.6346, -8.0156, "Beautiful station in Marrakech"));
+                        .save(new Station(null, "Marrakech", 31.6346, -8.0156, "Beautiful station in Marrakech", null,
+                                null));
 
             Station tanger = stationRepository.findByName("Tanger Ville");
             if (tanger == null)
                 tanger = stationRepository
-                        .save(new Station(null, "Tanger Ville", 35.7733, -5.8025, "Gateway to Europe"));
+                        .save(new Station(null, "Tanger Ville", 35.7733, -5.8025, "Gateway to Europe", null, null));
 
             // 2. Create Trains
             Train alBoraq = trainRepository.findByName("Al Boraq TGV");
             if (alBoraq == null) {
-                alBoraq = trainRepository.save(new Train(null, "Al Boraq TGV", Seat.generateSeats(250)));
+                alBoraq = trainRepository.save(new Train(null, "Al Boraq TGV", oncf, Seat.generateSeats(250)));
+                System.out.println("✅ Created Train: Al Boraq TGV");
+            } else if (alBoraq.getProvider() == null) {
+                alBoraq.setProvider(oncf);
+                trainRepository.save(alBoraq);
+                System.out.println("🔄 Updated Train: Al Boraq TGV with Provider");
             }
 
             Train atlas = trainRepository.findByName("Atlas Express");
             if (atlas == null) {
-                atlas = trainRepository.save(new Train(null, "Atlas Express", Seat.generateSeats(300)));
+                atlas = trainRepository.save(new Train(null, "Atlas Express", oncf, Seat.generateSeats(300)));
+                System.out.println("✅ Created Train: Atlas Express");
+            } else if (atlas.getProvider() == null) {
+                atlas.setProvider(oncf);
+                trainRepository.save(atlas);
+                System.out.println("🔄 Updated Train: Atlas Express with Provider");
             }
 
             // 3. Create Schedules (Only if we don't have them yet)
@@ -144,6 +165,7 @@ public class DataInitializer implements CommandLineRunner {
                         new BigDecimal("150.00"), 200); // Partially booked
 
                 scheduleRepository.saveAll(Arrays.asList(schedule1, schedule2, schedule3));
+                System.out.println("✅ Created initial schedules");
             }
 
             // 4. Create Demo Schedule with Intermediate Stops: Casablanca -> Tanger
@@ -217,8 +239,9 @@ public class DataInitializer implements CommandLineRunner {
                 rewardRepository.saveAll(Arrays.asList(reward1, reward2, reward3));
                 System.out.println("✅ Created initial rewards");
             }
-        } else {
-            System.out.println("Database already contains data. Skipping seeding.");
+        } catch (Exception e) {
+            System.err.println("Error during data initialization: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

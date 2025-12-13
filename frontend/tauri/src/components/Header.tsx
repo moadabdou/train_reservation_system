@@ -1,34 +1,54 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Bus, HelpCircle, User, LogOut, Ticket, Award } from "lucide-react";
+import { Bus, HelpCircle, User, LogOut, Ticket, Award, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import "./Header.css";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    variant?: "default" | "admin";
+}
+
+const Header: React.FC<HeaderProps> = ({ variant = "default" }) => {
     const { isLoggedIn, user, logout } = useAuth();
 
     return (
         <header className="app-header">
             <div className="container header-content">
-                <Link to="/" className="logo" style={{ textDecoration: "none", color: "inherit" }}>
+                <Link
+                    to={variant === "admin" ? "/admin/providers" : "/"}
+                    className="logo"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                >
                     <Bus size={32} className="logo-icon" />
                     <span className="logo-text">MarkoubClone</span>
                 </Link>
                 <nav className="nav-links">
-                    <a href="#" className="nav-link">
-                        <HelpCircle size={18} />
-                        <span>Aide</span>
-                    </a>
+                    {variant === "default" && (
+                        <a href="#" className="nav-link">
+                            <HelpCircle size={18} />
+                            <span>Aide</span>
+                        </a>
+                    )}
                     {isLoggedIn ? (
                         <>
-                            <Link to="/my-bookings" className="nav-link">
-                                <Ticket size={18} />
-                                <span>Mes Réservations</span>
-                            </Link>
-                            <Link to="/loyalty" className="nav-link">
-                                <Award size={18} />
-                                <span>Loyalty</span>
-                            </Link>
+                            {variant === "default" && user?.role === "admin" && (
+                                <Link to="/admin/providers" className="nav-link">
+                                    <Settings size={18} />
+                                    <span>Admin</span>
+                                </Link>
+                            )}
+                            {variant === "default" && (
+                                <>
+                                    <Link to="/my-bookings" className="nav-link">
+                                        <Ticket size={18} />
+                                        <span>Mes Réservations</span>
+                                    </Link>
+                                    <Link to="/loyalty" className="nav-link">
+                                        <Award size={18} />
+                                        <span>Loyalty</span>
+                                    </Link>
+                                </>
+                            )}
                             <span className="nav-link user-name">
                                 <User size={18} />
                                 <span>{user?.name}</span>

@@ -31,8 +31,8 @@ public class StationControllerTest {
 
     @Test
     void getStations_ShouldReturnListOfStations() throws Exception {
-        StationDTO station1 = new StationDTO(1L, "Station A", 0.0, 0.0, "City A");
-        StationDTO station2 = new StationDTO(2L, "Station B", 0.0, 0.0, "City B");
+        StationDTO station1 = new StationDTO(1L, "Station A", 0.0, 0.0, "City A", null, null);
+        StationDTO station2 = new StationDTO(2L, "Station B", 0.0, 0.0, "City B", null, null);
         List<StationDTO> stations = Arrays.asList(station1, station2);
 
         when(stationService.getAllStations()).thenReturn(stations);
@@ -46,7 +46,7 @@ public class StationControllerTest {
 
     @Test
     void getStationInfo_ShouldReturnStationDTO() throws Exception {
-        StationDTO station = new StationDTO(1L, "Station A", 0.0, 0.0, "City A");
+        StationDTO station = new StationDTO(1L, "Station A", 0.0, 0.0, "City A", null, null);
 
         when(stationService.getStationInfo(anyLong())).thenReturn(station);
 

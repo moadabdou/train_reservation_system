@@ -9,12 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StationDTO {
+public class TrainDTO {
     private Long id;
     private String name;
-    private Double latitude;
-    private Double longitude;
-    private String description;
-    private String imageUrl;
-    private String facilities;
+    private Long providerId;
+    private String providerName;
 }

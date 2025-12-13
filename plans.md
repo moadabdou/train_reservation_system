@@ -223,3 +223,177 @@ Turn occasional travelers into frequent flyers.
         - **Progress Bar:** "You are 500 points away from Gold Tier!"
         - **Leaderboards:** (Optional) "You traveled more than 80% of users this month."
         - **Referral System:** "Invite a friend and you both get 10% off."
+
+---
+
+# ADMIN FEATURES AND DEV GUIDE
+
+The Admin Panel is the control center for the entire system. It requires a secure, separate interface (or a protected section of the main app) to manage resources, users, and operations.
+
+### Development Guide: Admin Features (Vertical Slice Method)
+
+#### **Admin Slice 1: Infrastructure Management (Trains, Stations, Providers)**
+
+Before scheduling trips, the physical assets must be defined in the system.
+
+- **🎯 Goal:** Admin can create, update, and delete Providers, Trains, and Stations (including rich media).
+- **⚙️ How-to:**
+    1.  **Database:**
+        - Create `Providers` table (`id`, `name`, `logo_url`, `contact_info`).
+        - Update `Trains` to include `provider_id`.
+        - Ensure `Stations` has fields for `image_url`, `description`, `facilities` (e.g., "Wifi, Parking").
+    2.  **Back-end:**
+        - Create CRUD endpoints: `GET/POST/PUT/DELETE /api/admin/providers`, `/api/admin/trains`, `/api/admin/stations`.
+        - Implement file upload logic for station images and provider logos.
+    3.  **Front-end:**
+        - **Admin Dashboard:** Create a sidebar navigation for "Infrastructure".
+        - **Forms:** Build forms to add/edit these entities. Use a file picker for images.
+        - **List Views:** Display tables of existing assets with "Edit" and "Delete" actions.
+
+---
+
+#### **Admin Slice 2: Route & Path Definition**
+
+To automate schedule creation, we first define the "physical" and "logical" paths trains can take.
+
+- **🎯 Goal:** Define reusable Routes (e.g., "North Line: Tangier -> Casablanca") and the sequence of stations within them.
+- **⚙️ How-to:**
+    1.  **Database:**
+        - Create `Routes` table (`id`, `name`, `description`).
+        - Create `RouteDefinitions` (or `PathNodes`) table (`id`, `route_id`, `station_id`, `stop_order`, `distance_from_prev_km`, `standard_travel_time_mins`).
+    2.  **Back-end:**
+        - Create endpoints to manage Routes and their stops.
+        - Validation logic: Ensure the sequence of stations makes geographical sense (connected).
+    3.  **Front-end:**
+        - **Route Builder:** A UI tool where the admin selects a "Start Station", then adds subsequent stations in order.
+        - The admin inputs the standard travel time between these stops (used later for auto-scheduling).
+
+---
+
+#### **Admin Slice 3: Smart Schedule Generation**
+
+This is the "Magic" button for the admin. Instead of manually entering every stop time, the system calculates it.
+
+- **🎯 Goal:** Create a full schedule (with all intermediate stops) by simply selecting a Route, a Train, and a Start Time.
+- **⚙️ How-to:**
+    1.  **Database:**
+        - Ensure `Schedules` and `RouteStops` (from User Slice 7) are ready to be populated.
+    2.  **Back-end:**
+        - Create `POST /api/admin/schedules/generate`.
+        - **Input:** `route_id`, `train_id`, `departure_time`.
+        - **Logic:**
+            1.  Fetch the `RouteDefinitions` for the selected route.
+            2.  Create the main `Schedule` record.
+            3.  Iterate through the stations in the route. Calculate `arrival_time` and `departure_time` for each stop by adding the `standard_travel_time_mins` to the previous time.
+            4.  Save all `RouteStops`.
+    3.  **Front-end:**
+        - **Schedule Wizard:**
+            1.  Select Route (e.g., "North Line").
+            2.  Select Train (e.g., "Al Boraq 1").
+            3.  Pick Date & Start Time.
+            4.  **Preview:** Show the calculated timetable to the admin.
+            5.  **Confirm:** Save to database.
+
+---
+
+#### **Admin Slice 4: User & Booking Management**
+
+Admins need oversight on who is using the system and the ability to intervene.
+
+- **🎯 Goal:** View user statistics, ban/unban users, and manage bookings (cancellations/modifications).
+- **⚙️ How-to:**
+    1.  **Database:**
+        - Ensure `Users` table has a `status` (ACTIVE, BANNED) and `role` (USER, ADMIN).
+    2.  **Back-end:**
+        - `GET /api/admin/users`: List users with pagination and filters.
+        - `POST /api/admin/users/:id/ban`: Ban a user (prevent login).
+        - `GET /api/admin/bookings`: View all bookings system-wide.
+        - `POST /api/admin/bookings/:id/cancel`: Admin override to cancel a booking without penalty (optional).
+    3.  **Front-end:**
+        - **User Management Table:** Show name, email, booking count, status. Action buttons for "Ban/Unban".
+        - **Booking Manager:** Search bookings by Booking ID or User Email.
+
+---
+
+#### **Admin Slice 5: Financials & Payment Validation**
+
+Monitor the money flow.
+
+- **🎯 Goal:** Validate manual payments (if any) and view financial health stats.
+- **⚙️ How-to:**
+    1.  **Back-end:**
+        - `GET /api/admin/payments`: List recent transactions.
+        - `POST /api/admin/payments/:id/validate`: For manual bank transfers, admin clicks to confirm receipt.
+        - `GET /api/admin/stats/financial`: Aggregated data (Total Revenue, Revenue by Route, Refund Total).
+    2.  **Front-end:**
+        - **Financial Dashboard:** Charts showing revenue trends.
+        - **Validation Queue:** List of pending payments requiring admin approval.
+
+---
+
+#### **Admin Slice 6: System Monitoring & Analytics**
+
+The "God View" of the system.
+
+- **🎯 Goal:** See real-time stats, history, and active journeys.
+- **⚙️ How-to:**
+    1.  **Back-end:**
+        - `GET /api/admin/dashboard-stats`: High-level metrics (Active Trains, Users Online, Today's Bookings).
+        - `GET /api/admin/live-map`: Returns positions of all currently running trains (reusing logic from User Slice 7).
+    2.  **Front-end:**
+        - **Main Dashboard:** Cards for "Total Users", "Active Trains", "Revenue Today".
+        - **Live Map:** A large map showing all trains moving in real-time.
+        - **History/Logs:** View system logs or past performance metrics.
+
+---
+
+#### **Admin Slice 7: Loyalty & Rewards Management**
+
+Turn the loyalty program into a managed system.
+
+- **🎯 Goal:** Admin can define what rewards are available and configure point earning rules.
+- **⚙️ How-to:**
+    1.  **Database:**
+        - Use existing `Rewards` table.
+        - Create `LoyaltyRules` table (e.g., `rule_name`: "Standard Earn", `multiplier`: 1.0).
+    2.  **Back-end:**
+        - `POST /api/admin/rewards`: Create new vouchers/perks.
+        - `PUT /api/admin/loyalty-settings`: Update how many points users earn per dollar.
+    3.  **Front-end:**
+        - **Rewards Catalog:** A grid view to add/edit rewards (upload images, set point cost).
+        - **Rules Config:** Simple inputs to set "Points per $1 spent" or "Bonus Multiplier".
+
+---
+
+#### **Admin Slice 8: Smart Companion CMS (Content Management)**
+
+Manage the content for the "Smart Companion" feature.
+
+- **🎯 Goal:** Admin can update destination guides, dining menus, and travel tips.
+- **⚙️ How-to:**
+    1.  **Database:**
+        - `CityGuides` (city_name, content_json, weather_api_id).
+        - `OnboardItems` (name, price, category, is_available).
+    2.  **Back-end:**
+        - CRUD endpoints for `CityGuides` and `OnboardItems`.
+    3.  **Front-end:**
+        - **City Guide Editor:** A rich-text editor to write tips for cities (e.g., "Top 3 things to do in Casablanca").
+        - **Menu Manager:** A list to toggle availability of food items (e.g., "Sold Out").
+
+---
+
+#### **Admin Slice 9: Seat Configuration & Dynamic Pricing**
+
+Manage seat layouts and pricing strategies.
+
+- **🎯 Goal:** Define seat layouts (visual map) and set pricing rules (e.g., "First Class = 1.5x price").
+- **⚙️ How-to:**
+    1.  **Database:**
+        - `TrainLayouts` (train_type, rows, seats_per_row, class_type).
+        - `PricingRules` (condition: "Booked < 24h", adjustment: "+20%").
+    2.  **Back-end:**
+        - `POST /api/admin/layouts`: Define the grid of seats for a train.
+        - Update the "Search" logic to apply `PricingRules`.
+    3.  **Front-end:**
+        - **Visual Seat Editor:** A grid tool where admin can click to define "This is a First Class Seat" or "This is a Table".
+        - **Pricing Engine:** A form to add rules like "If date is Weekend, increase price by 10%".
