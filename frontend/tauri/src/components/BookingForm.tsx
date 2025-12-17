@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { ScheduleDTO } from '../types';
-import { createBooking, processPayment } from '../services/bookingService';
-import { ArrowLeft, User, Plus, Trash2, CreditCard, Calendar, Lock } from 'lucide-react';
-import './BookingForm.css';
+import React, { useState } from "react";
+import { ScheduleDTO } from "../types";
+import { createBooking, processPayment } from "../services/bookingService";
+import { ArrowLeft, User, Plus, Trash2, CreditCard, Calendar, Lock } from "lucide-react";
+import "./BookingForm.css";
 
 interface BookingFormProps {
     schedule: ScheduleDTO;
@@ -24,18 +24,18 @@ interface PaymentDetails {
 
 const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }) => {
     const [step, setStep] = useState(1);
-    const [passengers, setPassengers] = useState<Passenger[]>([{ name: '', age: '' }]);
+    const [passengers, setPassengers] = useState<Passenger[]>([{ name: "", age: "" }]);
     const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({
-        cardNumber: '',
-        expiryDate: '',
-        cvv: '',
-        cardHolder: ''
+        cardNumber: "",
+        expiryDate: "",
+        cvv: "",
+        cardHolder: "",
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const addPassenger = () => {
-        setPassengers([...passengers, { name: '', age: '' }]);
+        setPassengers([...passengers, { name: "", age: "" }]);
     };
 
     const removePassenger = (index: number) => {
@@ -59,7 +59,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
     const handleNextStep = (e: React.FormEvent) => {
         e.preventDefault();
         // Validate passengers
-        const isValid = passengers.every(p => p.name.trim() && p.age);
+        const isValid = passengers.every((p) => p.name.trim() && p.age);
         if (!isValid) {
             setError("Veuillez remplir tous les champs passagers");
             return;
@@ -78,9 +78,14 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         // Validate payment
-        if (!paymentDetails.cardNumber || !paymentDetails.expiryDate || !paymentDetails.cvv || !paymentDetails.cardHolder) {
+        if (
+            !paymentDetails.cardNumber ||
+            !paymentDetails.expiryDate ||
+            !paymentDetails.cvv ||
+            !paymentDetails.cardHolder
+        ) {
             setError("Veuillez remplir tous les détails de paiement");
             return;
         }
@@ -91,21 +96,21 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
         try {
             const bookingRequest = {
                 scheduleId: schedule.id,
-                passengers: passengers.map(p => ({
+                passengers: passengers.map((p) => ({
                     name: p.name,
-                    age: parseInt(p.age) || 0
-                }))
+                    age: parseInt(p.age) || 0,
+                })),
             };
 
             const booking = await createBooking(bookingRequest);
-            
+
             await processPayment({
                 bookingId: booking.bookingId,
-                paymentMethod: 'CREDIT_CARD',
+                paymentMethod: "CREDIT_CARD",
                 amount: booking.totalPrice,
                 cardNumber: paymentDetails.cardNumber,
                 expiryDate: paymentDetails.expiryDate,
-                cvv: paymentDetails.cvv
+                cvv: paymentDetails.cvv,
             });
 
             onSuccess();
@@ -123,13 +128,13 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
         <div className="booking-container">
             <button onClick={handleBack} className="back-button">
                 <ArrowLeft size={20} />
-                <span>{step === 1 ? 'Retour aux résultats' : 'Retour aux passagers'}</span>
+                <span>{step === 1 ? "Retour aux résultats" : "Retour aux passagers"}</span>
             </button>
 
             <div className="booking-steps">
-                <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Passagers</div>
+                <div className={`step ${step >= 1 ? "active" : ""}`}>1. Passagers</div>
                 <div className="step-line"></div>
-                <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Paiement</div>
+                <div className={`step ${step >= 2 ? "active" : ""}`}>2. Paiement</div>
             </div>
 
             <div className="booking-layout">
@@ -143,8 +148,8 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                         <div className="passenger-header">
                                             <span className="passenger-label">Passager {index + 1}</span>
                                             {passengers.length > 1 && (
-                                                <button 
-                                                    type="button" 
+                                                <button
+                                                    type="button"
                                                     onClick={() => removePassenger(index)}
                                                     className="remove-btn"
                                                 >
@@ -157,11 +162,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                                 <label>Nom complet</label>
                                                 <div className="input-wrapper">
                                                     <User size={18} className="input-icon" />
-                                                    <input 
-                                                        type="text" 
+                                                    <input
+                                                        type="text"
                                                         placeholder="Ex: Ahmed Alami"
                                                         value={passenger.name}
-                                                        onChange={(e) => updatePassenger(index, 'name', e.target.value)}
+                                                        onChange={(e) => updatePassenger(index, "name", e.target.value)}
                                                         required
                                                     />
                                                 </div>
@@ -169,11 +174,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                             <div className="form-group age-group">
                                                 <label>Âge</label>
                                                 <div className="input-wrapper">
-                                                    <input 
-                                                        type="number" 
+                                                    <input
+                                                        type="number"
                                                         placeholder="25"
                                                         value={passenger.age}
-                                                        onChange={(e) => updatePassenger(index, 'age', e.target.value)}
+                                                        onChange={(e) => updatePassenger(index, "age", e.target.value)}
                                                         required
                                                         min="0"
                                                         max="120"
@@ -183,7 +188,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                         </div>
                                     </div>
                                 ))}
-                                
+
                                 <button type="button" onClick={addPassenger} className="add-passenger-btn">
                                     <Plus size={18} />
                                     Ajouter un passager
@@ -199,11 +204,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                         <label>Titulaire de la carte</label>
                                         <div className="input-wrapper">
                                             <User size={18} className="input-icon" />
-                                            <input 
-                                                type="text" 
+                                            <input
+                                                type="text"
                                                 placeholder="Nom sur la carte"
                                                 value={paymentDetails.cardHolder}
-                                                onChange={(e) => updatePayment('cardHolder', e.target.value)}
+                                                onChange={(e) => updatePayment("cardHolder", e.target.value)}
                                                 required
                                             />
                                         </div>
@@ -213,11 +218,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                         <label>Numéro de carte</label>
                                         <div className="input-wrapper">
                                             <CreditCard size={18} className="input-icon" />
-                                            <input 
-                                                type="text" 
+                                            <input
+                                                type="text"
                                                 placeholder="0000 0000 0000 0000"
                                                 value={paymentDetails.cardNumber}
-                                                onChange={(e) => updatePayment('cardNumber', e.target.value)}
+                                                onChange={(e) => updatePayment("cardNumber", e.target.value)}
                                                 maxLength={19}
                                                 required
                                             />
@@ -229,11 +234,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                             <label>Date d'expiration</label>
                                             <div className="input-wrapper">
                                                 <Calendar size={18} className="input-icon" />
-                                                <input 
-                                                    type="text" 
+                                                <input
+                                                    type="text"
                                                     placeholder="MM/YY"
                                                     value={paymentDetails.expiryDate}
-                                                    onChange={(e) => updatePayment('expiryDate', e.target.value)}
+                                                    onChange={(e) => updatePayment("expiryDate", e.target.value)}
                                                     maxLength={5}
                                                     required
                                                 />
@@ -243,11 +248,11 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                                             <label>CVV</label>
                                             <div className="input-wrapper">
                                                 <Lock size={18} className="input-icon" />
-                                                <input 
-                                                    type="text" 
+                                                <input
+                                                    type="text"
                                                     placeholder="123"
                                                     value={paymentDetails.cvv}
-                                                    onChange={(e) => updatePayment('cvv', e.target.value)}
+                                                    onChange={(e) => updatePayment("cvv", e.target.value)}
                                                     maxLength={3}
                                                     required
                                                 />
@@ -269,16 +274,16 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                         </div>
                         <div className="summary-row">
                             <span>Départ</span>
-                            <span>{schedule.departureTime.split('T')[1].substring(0, 5)}</span>
+                            <span>{schedule.departureTime.split("T")[1].substring(0, 5)}</span>
                         </div>
                         <div className="summary-row">
                             <span>Arrivée</span>
-                            <span>{schedule.arrivalTime.split('T')[1].substring(0, 5)}</span>
+                            <span>{schedule.arrivalTime.split("T")[1].substring(0, 5)}</span>
                         </div>
                         <div className="divider"></div>
                         <div className="summary-row">
                             <span>Prix par personne</span>
-                            <span>{schedule.price} MAD</span>
+                            <span>{schedule.price} dh</span>
                         </div>
                         <div className="summary-row">
                             <span>Passagers</span>
@@ -287,18 +292,22 @@ const BookingForm: React.FC<BookingFormProps> = ({ schedule, onBack, onSuccess }
                         <div className="divider"></div>
                         <div className="summary-total">
                             <span>Total à payer</span>
-                            <span>{totalPrice.toFixed(2)} MAD</span>
+                            <span>{totalPrice.toFixed(2)} dh</span>
                         </div>
 
                         {error && <div className="error-message">{error}</div>}
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             form={step === 1 ? "passenger-form" : "payment-form"}
                             className="confirm-btn"
                             disabled={loading}
                         >
-                            {loading ? 'Traitement...' : (step === 1 ? 'Continuer vers le paiement' : 'Payer et Confirmer')}
+                            {loading
+                                ? "Traitement..."
+                                : step === 1
+                                  ? "Continuer vers le paiement"
+                                  : "Payer et Confirmer"}
                         </button>
                     </div>
                 </div>

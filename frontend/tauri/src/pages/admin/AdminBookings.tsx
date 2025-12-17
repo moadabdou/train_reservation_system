@@ -69,7 +69,7 @@ const AdminBookings: React.FC = () => {
                                         </span>
                                     </td>
                                     <td>{booking.passengersCount}</td>
-                                    <td>${booking.totalPrice}</td>
+                                    <td>{booking.totalPrice} dh</td>
                                     <td>
                                         {booking.status !== "CANCELLED" && (
                                             <button
