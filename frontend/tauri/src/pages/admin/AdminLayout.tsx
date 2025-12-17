@@ -14,6 +14,15 @@ const AdminLayout: React.FC = () => {
                     <h2>Admin Panel</h2>
                     <nav>
                         <ul>
+                            <li
+                                className={
+                                    location.pathname === "/admin/dashboard" || location.pathname === "/admin"
+                                        ? "active"
+                                        : ""
+                                }
+                            >
+                                <Link to="/admin/dashboard">Dashboard</Link>
+                            </li>
                             <li className={location.pathname === "/admin/providers" ? "active" : ""}>
                                 <Link to="/admin/providers">Providers</Link>
                             </li>
@@ -22,6 +31,36 @@ const AdminLayout: React.FC = () => {
                             </li>
                             <li className={location.pathname === "/admin/stations" ? "active" : ""}>
                                 <Link to="/admin/stations">Stations</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/routes" ? "active" : ""}>
+                                <Link to="/admin/routes">Routes</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/schedules" ? "active" : ""}>
+                                <Link to="/admin/schedules">Schedules</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/schedules/generate" ? "active" : ""}>
+                                <Link to="/admin/schedules/generate">Generate Schedule</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/users" ? "active" : ""}>
+                                <Link to="/admin/users">Users</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/bookings" ? "active" : ""}>
+                                <Link to="/admin/bookings">Bookings</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/financials" ? "active" : ""}>
+                                <Link to="/admin/financials">Financials</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/payments" ? "active" : ""}>
+                                <Link to="/admin/payments">Payment Validation</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/loyalty" ? "active" : ""}>
+                                <Link to="/admin/loyalty">Loyalty & Rewards</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/content" ? "active" : ""}>
+                                <Link to="/admin/content">Content Management</Link>
+                            </li>
+                            <li className={location.pathname === "/admin/pricing" ? "active" : ""}>
+                                <Link to="/admin/pricing">Pricing & Layouts</Link>
                             </li>
                         </ul>
                     </nav>

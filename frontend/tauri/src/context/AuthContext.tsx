@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { getCurrentUser, getToken, logout as authLogout } from "../services/authService";
+import { getToken, logout as authLogout, validateToken } from "../services/authService";
 
 interface User {
     email: string;
@@ -22,13 +22,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        // Check for existing auth on mount
-        const storedToken = getToken();
-        const storedUser = getCurrentUser();
-        if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(storedUser);
-        }
+        const checkAuth = async () => {
+            const storedToken = getToken();
+            if (storedToken) {
+                try {
+                    const userData = await validateToken();
+                    setToken(storedToken);
+                    setUser({
+                        email: userData.email,
+                        name: userData.name,
+                        role: userData.role,
+                    });
+                } catch (error) {
+                    console.error("Token validation failed:", error);
+                    logout();
+                }
+            }
+        };
+        checkAuth();
     }, []);
 
     const setAuth = (user: User, token: string) => {

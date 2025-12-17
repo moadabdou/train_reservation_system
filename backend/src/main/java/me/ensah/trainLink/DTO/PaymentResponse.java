@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
 public class PaymentResponse {
     private Long id;
     private Long bookingId;

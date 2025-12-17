@@ -18,4 +18,5 @@ public class BookingSummaryDTO {
     private BookingStatus status;
     private int passengersCount;
     private BigDecimal totalPrice;
+    private String userEmail;
 }

@@ -50,6 +50,19 @@ export const logout = (): void => {
     localStorage.removeItem("user");
 };
 
+export const validateToken = async (): Promise<AuthResponse> => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        throw new Error("No token found");
+    }
+    const response = await axios.get(`${API_URL}/me`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+};
+
 export const getToken = (): string | null => {
     return localStorage.getItem("token");
 };

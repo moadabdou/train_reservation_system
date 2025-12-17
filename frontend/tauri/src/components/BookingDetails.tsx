@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { X, Download, Train, MapPin, Users, CreditCard, FolderOpen, CheckCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { X, Download, Train, MapPin, Users, CreditCard, FolderOpen, CheckCircle } from "lucide-react";
 import { jsPDF } from "jspdf";
-import { writeFile, BaseDirectory } from '@tauri-apps/plugin-fs';
-import { revealItemInDir } from '@tauri-apps/plugin-opener';
-import { downloadDir, join } from '@tauri-apps/api/path';
-import { getBookingReceipt, ReceiptDTO } from '../services/bookingService';
-import './BookingDetails.css';
+import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs";
+import { revealItemInDir } from "@tauri-apps/plugin-opener";
+import { downloadDir, join } from "@tauri-apps/api/path";
+import { getBookingReceipt, ReceiptDTO } from "../services/bookingService";
+import "./BookingDetails.css";
 
 interface BookingDetailsProps {
     referenceCode: string;
@@ -17,7 +17,7 @@ interface BookingDetailsProps {
 const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose, bookingStatus, onCancel }) => {
     const [receipt, setReceipt] = useState<ReceiptDTO | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [downloading, setDownloading] = useState(false);
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [savedFilePath, setSavedFilePath] = useState<string | null>(null);
@@ -29,7 +29,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
                 const data = await getBookingReceipt(referenceCode);
                 setReceipt(data);
             } catch (err) {
-                setError('Failed to load booking details');
+                setError("Failed to load booking details");
                 console.error(err);
             } finally {
                 setLoading(false);
@@ -44,23 +44,26 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
         };
     }, [referenceCode]);
 
-    const formatDateTime = useMemo(() => (dateString: string) => {
-        const date = new Date(dateString);
-        return {
-            date: date.toLocaleDateString('fr-FR', {
-                weekday: 'long',
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            }),
-            time: date.toLocaleTimeString('fr-FR', {
-                hour: '2-digit',
-                minute: '2-digit'
-            })
-        };
-    }, []);
+    const formatDateTime = useMemo(
+        () => (dateString: string) => {
+            const date = new Date(dateString);
+            return {
+                date: date.toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                }),
+                time: date.toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }),
+            };
+        },
+        []
+    );
 
-    const formatCurrency = (amount: number) => `${amount.toFixed(2)} MAD`;
+    const formatCurrency = (amount: number) => `${amount.toFixed(2)} dh`;
 
     const generatePDFHtml = (data: ReceiptDTO) => {
         const departure = formatDateTime(data.departureTime);
@@ -139,7 +142,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
                     </div>
                     <div class="detail-card">
                         <div class="label">Transaction</div>
-                        <div class="value mono">${data.transactionId || 'N/A'}</div>
+                        <div class="value mono">${data.transactionId || "N/A"}</div>
                     </div>
                     <div class="detail-card">
                         <div class="label">Nombre de passagers</div>
@@ -150,7 +153,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
                 <div class="passengers-section">
                     <h3>Passagers</h3>
                     <div class="passenger-list">
-                        ${data.passengerNames.map((name) => `<div class="passenger-chip">${name}</div>`).join('')}
+                        ${data.passengerNames.map((name) => `<div class="passenger-chip">${name}</div>`).join("")}
                     </div>
                 </div>
 
@@ -188,36 +191,36 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
 
         try {
             const htmlContent = generatePDFHtml(receipt);
-            
+
             // Create a temporary container
-            const container = document.createElement('div');
+            const container = document.createElement("div");
             container.innerHTML = htmlContent;
-            container.style.position = 'absolute';
-            container.style.left = '-9999px';
-            container.style.top = '0';
+            container.style.position = "absolute";
+            container.style.left = "-9999px";
+            container.style.top = "0";
             document.body.appendChild(container);
 
             const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'pt',
-                format: 'a4'
+                orientation: "portrait",
+                unit: "pt",
+                format: "a4",
             });
 
-            await doc.html(container.querySelector('.pdf-container') as HTMLElement, {
+            await doc.html(container.querySelector(".pdf-container") as HTMLElement, {
                 callback: async function (doc) {
                     try {
-                        const pdfData = doc.output('arraybuffer');
+                        const pdfData = doc.output("arraybuffer");
                         const fileName = `ticket-${receipt.bookingReference}.pdf`;
-                        
+
                         // Save using Tauri FS
                         await writeFile(fileName, new Uint8Array(pdfData), { baseDir: BaseDirectory.Download });
-                        
+
                         // Get absolute path for "Show in Explorer"
                         const downloadDirPath = await downloadDir();
                         const filePath = await join(downloadDirPath, fileName);
-                        
+
                         setSavedFilePath(filePath);
-                        
+
                         // Cleanup
                         document.body.removeChild(container);
                         setDownloadProgress(100);
@@ -245,9 +248,8 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
                 x: 10,
                 y: 10,
                 width: 575, // A4 width in pt (595) - margins
-                windowWidth: 800 // The width of the element to render
+                windowWidth: 800, // The width of the element to render
             });
-
         } catch (err) {
             console.error(err);
             setError("Erreur lors du téléchargement du ticket");
@@ -281,7 +283,7 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
             <div className="modal-overlay">
                 <div className="modal-content">
                     <div className="error-state">
-                        <p>{error || 'Error loading details'}</p>
+                        <p>{error || "Error loading details"}</p>
                         <button onClick={onClose}>Fermer</button>
                     </div>
                 </div>
@@ -304,25 +306,29 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
                         <h2>Détails de la Réservation</h2>
                         <span className="reference">#{receipt.bookingReference}</span>
                     </div>
-                    <div className="header-actions" style={{ display: 'flex', gap: '10px', marginRight: '40px' }}>
-                        {(bookingStatus === 'CONFIRMED' || bookingStatus === 'PENDING_PAYMENT') && onCancel && (
-                            <button 
-                                className="header-download-btn" 
+                    <div className="header-actions" style={{ display: "flex", gap: "10px", marginRight: "40px" }}>
+                        {(bookingStatus === "CONFIRMED" || bookingStatus === "PENDING_PAYMENT") && onCancel && (
+                            <button
+                                className="header-download-btn"
                                 onClick={onCancel}
-                                style={{ marginRight: 0, backgroundColor: 'rgba(239, 68, 68, 0.2)', borderColor: 'rgba(239, 68, 68, 0.5)' }}
+                                style={{
+                                    marginRight: 0,
+                                    backgroundColor: "rgba(239, 68, 68, 0.2)",
+                                    borderColor: "rgba(239, 68, 68, 0.5)",
+                                }}
                             >
                                 <X size={18} />
                                 <span>Annuler</span>
                             </button>
                         )}
-                        <button 
-                            className="header-download-btn" 
-                            onClick={handleDownload} 
+                        <button
+                            className="header-download-btn"
+                            onClick={handleDownload}
                             disabled={downloading}
                             style={{ marginRight: 0 }}
                         >
                             <Download size={18} />
-                            <span>{downloading ? '...' : 'Télécharger'}</span>
+                            <span>{downloading ? "..." : "Télécharger"}</span>
                         </button>
                     </div>
                 </div>
@@ -351,16 +357,22 @@ const BookingDetails: React.FC<BookingDetailsProps> = ({ referenceCode, onClose,
                 </div>
 
                 <div className="details-section">
-                    <h3><Users size={18} /> Passagers ({receipt.passengerNames.length})</h3>
+                    <h3>
+                        <Users size={18} /> Passagers ({receipt.passengerNames.length})
+                    </h3>
                     <div className="passengers-list">
                         {receipt.passengerNames.map((name, index) => (
-                            <span key={index} className="passenger-tag">{name}</span>
+                            <span key={index} className="passenger-tag">
+                                {name}
+                            </span>
                         ))}
                     </div>
                 </div>
 
                 <div className="details-section">
-                    <h3><CreditCard size={18} /> Paiement</h3>
+                    <h3>
+                        <CreditCard size={18} /> Paiement
+                    </h3>
                     <div className="payment-info">
                         <div className="payment-row">
                             <span>Statut</span>

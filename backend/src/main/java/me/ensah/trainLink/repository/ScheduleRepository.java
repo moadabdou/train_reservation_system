@@ -15,13 +15,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    
+
     List<Schedule> findByDepartureStationIdAndArrivalStationIdAndDepartureTimeBetween(
-        Long departureStationId, 
-        Long arrivalStationId, 
-        LocalDateTime startTime, 
-        LocalDateTime endTime
-    );
+            Long departureStationId,
+            Long arrivalStationId,
+            LocalDateTime startTime,
+            LocalDateTime endTime);
 
     // Atomically decrement available seats if enough seats are available
     @Modifying
@@ -35,5 +34,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("UPDATE Schedule s SET s.availableSeats = s.availableSeats + :count WHERE s.id = :scheduleId")
     int incrementAvailableSeats(@Param("scheduleId") Long scheduleId, @Param("count") int count);
 
+    List<Schedule> findByDepartureTimeBeforeAndArrivalTimeAfter(LocalDateTime now1, LocalDateTime now2);
+
+    List<Schedule> findByDepartureTimeBetween(LocalDateTime start, LocalDateTime end);
 }
-   

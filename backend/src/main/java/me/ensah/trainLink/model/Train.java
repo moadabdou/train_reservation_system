@@ -29,6 +29,10 @@ public class Train {
     @JoinColumn(name = "provider_id")
     private Provider provider;
 
+    @ManyToOne
+    @JoinColumn(name = "layout_id")
+    private TrainLayout trainLayout;
+
     // list of seats in the train
     @OneToMany(mappedBy = "train", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seat> seats;
@@ -41,5 +45,9 @@ public class Train {
     // cascaded to its seats
     // orphanRemoval = true means that if a seat is removed from the train's seat
     // list, it will be deleted from the database as well
+
+    public int getTotalSeats() {
+        return seats != null ? seats.size() : 0;
+    }
 
 }

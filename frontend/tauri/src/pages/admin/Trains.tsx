@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { adminService, Train, Provider } from "../../services/adminService";
+import { adminService, Train, Provider, TrainLayout } from "../../services/adminService";
 
 const Trains: React.FC = () => {
     const [trains, setTrains] = useState<Train[]>([]);
     const [providers, setProviders] = useState<Provider[]>([]);
+    const [layouts, setLayouts] = useState<TrainLayout[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentTrain, setCurrentTrain] = useState<Train>({ name: "", providerId: null });
+    const [currentTrain, setCurrentTrain] = useState<Train>({
+        name: "",
+        providerId: null,
+        totalSeats: 0,
+        trainLayoutId: null,
+    });
     const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         loadTrains();
         loadProviders();
+        loadLayouts();
     }, []);
 
     const loadTrains = async () => {
@@ -31,12 +38,26 @@ const Trains: React.FC = () => {
         }
     };
 
+    const loadLayouts = async () => {
+        try {
+            const data = await adminService.getAllLayouts();
+            setLayouts(data);
+        } catch (error) {
+            console.error("Failed to load layouts", error);
+        }
+    };
+
     const handleOpenModal = (train?: Train) => {
         if (train) {
             setCurrentTrain(train);
             setIsEditing(true);
         } else {
-            setCurrentTrain({ name: "", providerId: providers.length > 0 ? providers[0].id! : null });
+            setCurrentTrain({
+                name: "",
+                providerId: providers.length > 0 ? providers[0].id! : null,
+                totalSeats: 0,
+                trainLayoutId: null,
+            });
             setIsEditing(false);
         }
         setIsModalOpen(true);
@@ -44,7 +65,7 @@ const Trains: React.FC = () => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setCurrentTrain({ name: "", providerId: null });
+        setCurrentTrain({ name: "", providerId: null, totalSeats: 0 });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -88,6 +109,8 @@ const Trains: React.FC = () => {
                         <th>ID</th>
                         <th>Name</th>
                         <th>Provider</th>
+                        <th>Layout</th>
+                        <th>Total Seats</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -97,6 +120,8 @@ const Trains: React.FC = () => {
                             <td>{train.id}</td>
                             <td>{train.name}</td>
                             <td>{train.providerName || "-"}</td>
+                            <td>{train.trainLayoutName || "Manual"}</td>
+                            <td>{train.totalSeats}</td>
                             <td>
                                 <button className="action-btn edit-btn" onClick={() => handleOpenModal(train)}>
                                     Edit
@@ -124,6 +149,44 @@ const Trains: React.FC = () => {
                                     required
                                 />
                             </div>
+
+                            <div className="form-group">
+                                <label>Seat Layout (Optional)</label>
+                                <select
+                                    value={currentTrain.trainLayoutId || ""}
+                                    onChange={(e) => {
+                                        const layoutId = e.target.value ? Number(e.target.value) : null;
+                                        setCurrentTrain({
+                                            ...currentTrain,
+                                            trainLayoutId: layoutId,
+                                            // If layout selected, totalSeats will be calculated by backend, but we can keep 0 here
+                                        });
+                                    }}
+                                >
+                                    <option value="">Manual Seat Count</option>
+                                    {layouts.map((l) => (
+                                        <option key={l.id} value={l.id}>
+                                            {l.layoutName} ({l.totalRows}x{l.seatsPerRow})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {!currentTrain.trainLayoutId && (
+                                <div className="form-group">
+                                    <label>Total Seats</label>
+                                    <input
+                                        type="number"
+                                        value={currentTrain.totalSeats}
+                                        onChange={(e) =>
+                                            setCurrentTrain({ ...currentTrain, totalSeats: Number(e.target.value) })
+                                        }
+                                        required
+                                        min="1"
+                                    />
+                                </div>
+                            )}
+
                             <div className="form-group">
                                 <label>Provider</label>
                                 <select

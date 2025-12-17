@@ -1,0 +1,129 @@
+.admin-loyalty {
+    padding: 20px;
+}
+
+.loyalty-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.rewards-section,
+.rules-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rewards-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.reward-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    position: relative;
+}
+
+.reward-card h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+}
+
+.reward-cost {
+    color: #df4e00;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.reward-type {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    background: #f3f4f6;
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+.reward-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.rule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.rule-info h4 {
+    margin: 0;
+    font-size: 1em;
+}
+
+.rule-info p {
+    margin: 5px 0 0 0;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.rule-input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: right;
+}
+
+.add-reward-form {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: grid;
+    gap: 10px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+input,
+select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button.primary {
+    background: #df4e00;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.danger {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}

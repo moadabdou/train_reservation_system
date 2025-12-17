@@ -19,15 +19,24 @@ import me.ensah.trainLink.model.RouteStop;
 import me.ensah.trainLink.repository.RouteStopRepository;
 import java.time.Duration;
 
+import me.ensah.trainLink.repository.RouteRepository;
+import me.ensah.trainLink.repository.TrainRepository;
+import me.ensah.trainLink.model.RouteDefinition;
+
 @Service // Marks this as a service component for Spring
 public class ScheduleService {
 
         private final ScheduleRepository scheduleRepository;
         private final RouteStopRepository routeStopRepository;
+        private final RouteRepository routeRepository;
+        private final TrainRepository trainRepository;
 
-        public ScheduleService(ScheduleRepository scheduleRepository, RouteStopRepository routeStopRepository) {
+        public ScheduleService(ScheduleRepository scheduleRepository, RouteStopRepository routeStopRepository,
+                        RouteRepository routeRepository, TrainRepository trainRepository) {
                 this.scheduleRepository = scheduleRepository;
                 this.routeStopRepository = routeStopRepository;
+                this.routeRepository = routeRepository;
+                this.trainRepository = trainRepository;
         }
 
         public TrainPositionDTO getTrainPosition(Long scheduleId) {
@@ -222,6 +231,117 @@ public class ScheduleService {
                 return schedules.stream()
                                 .map(this::convertToDto)
                                 .collect(Collectors.toList());
+        }
+
+        public Schedule generateSchedule(Long routeId, Long trainId, LocalDateTime startTime,
+                        java.math.BigDecimal basePrice, boolean includeIntermediateStops) {
+                me.ensah.trainLink.model.Route route = routeRepository.findById(routeId)
+                                .orElseThrow(() -> new RuntimeException("Route not found"));
+                me.ensah.trainLink.model.Train train = trainRepository.findById(trainId)
+                                .orElseThrow(() -> new RuntimeException("Train not found"));
+
+                List<RouteDefinition> definitions = route.getRouteDefinitions();
+                definitions.sort(java.util.Comparator.comparingInt(RouteDefinition::getStopOrder));
+
+                if (definitions.isEmpty()) {
+                        throw new RuntimeException("Route has no stops defined");
+                }
+
+                RouteDefinition firstStop = definitions.get(0);
+                RouteDefinition lastStop = definitions.get(definitions.size() - 1);
+
+                // Calculate total duration
+                int totalDurationMins = definitions.stream()
+                                .mapToInt(d -> d.getStandardTravelTimeMins() != null ? d.getStandardTravelTimeMins()
+                                                : 0)
+                                .sum();
+
+                // Add dwell times (e.g. 5 mins per intermediate stop)
+                int dwellTimeMins = 5;
+                int totalDwellTime = 0;
+                if (includeIntermediateStops) {
+                        totalDwellTime = (definitions.size() - 2) * dwellTimeMins;
+                }
+                if (totalDwellTime < 0)
+                        totalDwellTime = 0;
+
+                LocalDateTime arrivalTime = startTime.plusMinutes(totalDurationMins + totalDwellTime);
+
+                Schedule schedule = new Schedule();
+                schedule.setTrain(train);
+                schedule.setDepartureStation(firstStop.getStation());
+                schedule.setArrivalStation(lastStop.getStation());
+                schedule.setDepartureTime(startTime);
+                schedule.setArrivalTime(arrivalTime);
+                schedule.setPrice(basePrice);
+                schedule.setAvailableSeats(train.getTotalSeats());
+
+                Schedule savedSchedule = scheduleRepository.save(schedule);
+
+                // Generate RouteStops
+                LocalDateTime currentDeparture = startTime;
+
+                if (includeIntermediateStops) {
+                        for (int i = 0; i < definitions.size(); i++) {
+                                RouteDefinition def = definitions.get(i);
+                                RouteStop stop = new RouteStop();
+                                stop.setSchedule(savedSchedule);
+                                stop.setStation(def.getStation());
+                                stop.setStopOrder(def.getStopOrder());
+
+                                if (i == 0) {
+                                        // First stop
+                                        stop.setArrivalTime(null);
+                                        stop.setDepartureTime(currentDeparture);
+                                } else {
+                                        int travelTime = def.getStandardTravelTimeMins() != null
+                                                        ? def.getStandardTravelTimeMins()
+                                                        : 0;
+                                        LocalDateTime arrival = currentDeparture.plusMinutes(travelTime);
+                                        stop.setArrivalTime(arrival);
+
+                                        if (i == definitions.size() - 1) {
+                                                // Last stop
+                                                stop.setDepartureTime(null);
+                                        } else {
+                                                // Intermediate stop
+                                                LocalDateTime departure = arrival.plusMinutes(dwellTimeMins);
+                                                stop.setDepartureTime(departure);
+                                                currentDeparture = departure;
+                                        }
+                                }
+                                routeStopRepository.save(stop);
+                        }
+                } else {
+                        // Only start and end stops
+                        RouteStop startStop = new RouteStop();
+                        startStop.setSchedule(savedSchedule);
+                        startStop.setStation(firstStop.getStation());
+                        startStop.setStopOrder(1);
+                        startStop.setArrivalTime(null);
+                        startStop.setDepartureTime(startTime);
+                        routeStopRepository.save(startStop);
+
+                        RouteStop endStop = new RouteStop();
+                        endStop.setSchedule(savedSchedule);
+                        endStop.setStation(lastStop.getStation());
+                        endStop.setStopOrder(2);
+                        endStop.setArrivalTime(arrivalTime);
+                        endStop.setDepartureTime(null);
+                        routeStopRepository.save(endStop);
+                }
+
+                return savedSchedule;
+        }
+
+        public List<ScheduleDTO> getAllSchedules() {
+                return scheduleRepository.findAll().stream()
+                                .map(this::convertToDto)
+                                .collect(Collectors.toList());
+        }
+
+        public void deleteSchedule(Long id) {
+                scheduleRepository.deleteById(id);
         }
 
         private ScheduleDTO convertToDto(Schedule schedule) {

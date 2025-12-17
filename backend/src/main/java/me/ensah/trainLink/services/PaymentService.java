@@ -53,19 +53,42 @@ public class PaymentService {
         payment.setAmount(request.getAmount());
         payment.setPaymentMethod(request.getPaymentMethod());
         payment.setPaymentDate(LocalDateTime.now());
+        payment.setStatus(PaymentStatus.COMPLETED);
         payment.setTransactionId(UUID.randomUUID().toString());
-        payment.setStatus(PaymentStatus.COMPLETED); // Mock success
 
-        payment = paymentRepository.save(payment);
+        Payment savedPayment = paymentRepository.save(payment);
 
-        // Update Booking status
+        // Update booking status
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
 
-        // Award Loyalty Points
+        // Award loyalty points
         loyaltyService.awardPoints(booking.getUser(), request.getAmount().doubleValue());
 
-        return mapToResponse(payment);
+        return new PaymentResponse(
+                savedPayment.getId(),
+                booking.getId(),
+                savedPayment.getAmount(),
+                savedPayment.getStatus(),
+                savedPayment.getTransactionId(),
+                savedPayment.getPaymentDate());
+    }
+
+    public Payment getPaymentByBooking(Long bookingId) {
+        return paymentRepository.findByBookingId(bookingId).orElse(null);
+    }
+
+    public PaymentResponse getReceipt(Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new IllegalArgumentException("Payment not found"));
+
+        return new PaymentResponse(
+                payment.getId(),
+                payment.getBooking().getId(),
+                payment.getAmount(),
+                payment.getStatus(),
+                payment.getTransactionId(),
+                payment.getPaymentDate());
     }
 
     @Transactional
@@ -92,24 +115,13 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 
-    public PaymentResponse getReceipt(Long bookingId) {
-        Payment payment = paymentRepository.findByBookingId(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("Payment not found"));
-        return mapToResponse(payment);
-    }
-
-    public Payment getPaymentByBooking(Long bookingId) {
-        return paymentRepository.findByBookingId(bookingId).orElse(null);
-    }
-
     private PaymentResponse mapToResponse(Payment payment) {
-        PaymentResponse response = new PaymentResponse();
-        response.setId(payment.getId());
-        response.setBookingId(payment.getBooking().getId());
-        response.setAmount(payment.getAmount());
-        response.setStatus(payment.getStatus());
-        response.setTransactionId(payment.getTransactionId());
-        response.setPaymentDate(payment.getPaymentDate());
-        return response;
+        return new PaymentResponse(
+                payment.getId(),
+                payment.getBooking().getId(),
+                payment.getAmount(),
+                payment.getStatus(),
+                payment.getTransactionId(),
+                payment.getPaymentDate());
     }
 }

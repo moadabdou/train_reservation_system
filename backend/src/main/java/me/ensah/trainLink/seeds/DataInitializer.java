@@ -10,8 +10,11 @@ import me.ensah.trainLink.model.Seat;
 import me.ensah.trainLink.model.Station;
 import me.ensah.trainLink.model.Train;
 import me.ensah.trainLink.model.User;
+import me.ensah.trainLink.model.UserStatus;
 import me.ensah.trainLink.model.Reward;
 import me.ensah.trainLink.model.Provider;
+import me.ensah.trainLink.model.Route;
+import me.ensah.trainLink.model.RouteDefinition;
 import me.ensah.trainLink.repository.RouteStopRepository;
 import me.ensah.trainLink.repository.ScheduleRepository;
 import me.ensah.trainLink.repository.StationRepository;
@@ -19,9 +22,11 @@ import me.ensah.trainLink.repository.TrainRepository;
 import me.ensah.trainLink.repository.UserRepository;
 import me.ensah.trainLink.repository.RewardRepository;
 import me.ensah.trainLink.repository.ProviderRepository;
+import me.ensah.trainLink.repository.RouteRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,13 +41,15 @@ public class DataInitializer implements CommandLineRunner {
     private final RouteStopRepository routeStopRepository;
     private final RewardRepository rewardRepository;
     private final ProviderRepository providerRepository;
+    private final RouteRepository routeRepository;
 
     // Spring will automatically inject the repositories here (Constructor
     // Injection)
     public DataInitializer(StationRepository stationRepository, TrainRepository trainRepository,
             ScheduleRepository scheduleRepository, UserRepository userRepository,
             PasswordEncoder passwordEncoder, RouteStopRepository routeStopRepository,
-            RewardRepository rewardRepository, ProviderRepository providerRepository) {
+            RewardRepository rewardRepository, ProviderRepository providerRepository,
+            RouteRepository routeRepository) {
         this.stationRepository = stationRepository;
         this.trainRepository = trainRepository;
         this.scheduleRepository = scheduleRepository;
@@ -51,6 +58,7 @@ public class DataInitializer implements CommandLineRunner {
         this.routeStopRepository = routeStopRepository;
         this.rewardRepository = rewardRepository;
         this.providerRepository = providerRepository;
+        this.routeRepository = routeRepository;
     }
 
     @Override
@@ -72,7 +80,7 @@ public class DataInitializer implements CommandLineRunner {
             if (userRepository.findByEmail("mohssine@gmail.com").isEmpty()) {
                 // Email: mohssine@gmail.com, Password: mohssine
                 User admin = new User(null, "Admin User", "mohssine@gmail.com",
-                        passwordEncoder.encode("mohssine"), "admin");
+                        passwordEncoder.encode("mohssine"), "admin", UserStatus.ACTIVE);
                 userRepository.save(admin);
                 System.out.println("✅ Admin user created: mohssine@gmail.com / mohssine");
             }
@@ -81,7 +89,7 @@ public class DataInitializer implements CommandLineRunner {
             if (userRepository.findByEmail("client@trainlink.com").isEmpty()) {
                 // Email: client@trainlink.com, Password: mohssine
                 User client = new User(null, "Client User", "client@trainlink.com",
-                        passwordEncoder.encode("mohssine"), "client");
+                        passwordEncoder.encode("mohssine"), "client", UserStatus.ACTIVE);
                 userRepository.save(client);
                 System.out.println("✅ Client user created: client@trainlink.com / mohssine");
             }
@@ -90,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
             Provider oncf = providerRepository.findByName("ONCF");
             if (oncf == null) {
                 oncf = new Provider(null, "ONCF",
-                        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/ONCF_Logo.svg/1200px-ONCF_Logo.svg.png",
+                        "https://upload.wikimedia.org/wikipedia/fr/e/e5/Logo_ONCF.svg",
                         "contact@oncf.ma", null);
                 oncf = providerRepository.save(oncf);
                 System.out.println("✅ Created Provider: ONCF");
@@ -98,7 +106,7 @@ public class DataInitializer implements CommandLineRunner {
                 // Update logo if it's missing or different (optional, but good for fixing
                 // broken data)
                 oncf.setLogoUrl(
-                        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/ONCF_Logo.svg/1200px-ONCF_Logo.svg.png");
+                        "https://upload.wikimedia.org/wikipedia/fr/e/e5/Logo_ONCF.svg");
                 providerRepository.save(oncf);
                 System.out.println("🔄 Updated Provider: ONCF logo");
             }
@@ -129,7 +137,7 @@ public class DataInitializer implements CommandLineRunner {
             // 2. Create Trains
             Train alBoraq = trainRepository.findByName("Al Boraq TGV");
             if (alBoraq == null) {
-                alBoraq = trainRepository.save(new Train(null, "Al Boraq TGV", oncf, Seat.generateSeats(250)));
+                alBoraq = trainRepository.save(new Train(null, "Al Boraq TGV", oncf, null, Seat.generateSeats(250)));
                 System.out.println("✅ Created Train: Al Boraq TGV");
             } else if (alBoraq.getProvider() == null) {
                 alBoraq.setProvider(oncf);
@@ -139,7 +147,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Train atlas = trainRepository.findByName("Atlas Express");
             if (atlas == null) {
-                atlas = trainRepository.save(new Train(null, "Atlas Express", oncf, Seat.generateSeats(300)));
+                atlas = trainRepository.save(new Train(null, "Atlas Express", oncf, null, Seat.generateSeats(300)));
                 System.out.println("✅ Created Train: Atlas Express");
             } else if (atlas.getProvider() == null) {
                 atlas.setProvider(oncf);
@@ -152,17 +160,17 @@ public class DataInitializer implements CommandLineRunner {
                 Schedule schedule1 = new Schedule(null, alBoraq, casa, rabat,
                         LocalDateTime.now().plusDays(1).withHour(8).withMinute(0),
                         LocalDateTime.now().plusDays(1).withHour(9).withMinute(0),
-                        new BigDecimal("95.00"), 250);
+                        new BigDecimal("95.00"), 250, null);
 
                 Schedule schedule2 = new Schedule(null, atlas, rabat, marrakech,
                         LocalDateTime.now().plusDays(1).withHour(10).withMinute(30),
                         LocalDateTime.now().plusDays(1).withHour(14).withMinute(0),
-                        new BigDecimal("120.00"), 300);
+                        new BigDecimal("120.00"), 300, null);
 
                 Schedule schedule3 = new Schedule(null, alBoraq, tanger, rabat,
                         LocalDateTime.now().plusDays(2).withHour(7).withMinute(0),
                         LocalDateTime.now().plusDays(2).withHour(8).withMinute(20),
-                        new BigDecimal("150.00"), 200); // Partially booked
+                        new BigDecimal("150.00"), 200, null); // Partially booked
 
                 scheduleRepository.saveAll(Arrays.asList(schedule1, schedule2, schedule3));
                 System.out.println("✅ Created initial schedules");
@@ -178,7 +186,7 @@ public class DataInitializer implements CommandLineRunner {
                 Schedule demoSchedule = new Schedule(null, alBoraq, casa, tanger,
                         LocalDateTime.now().plusDays(1).withHour(8).withMinute(0),
                         LocalDateTime.now().plusDays(1).withHour(10).withMinute(10),
-                        new BigDecimal("200.00"), 250);
+                        new BigDecimal("200.00"), 250, null);
 
                 demoSchedule = scheduleRepository.save(demoSchedule);
 
@@ -239,6 +247,101 @@ public class DataInitializer implements CommandLineRunner {
                 rewardRepository.saveAll(Arrays.asList(reward1, reward2, reward3));
                 System.out.println("✅ Created initial rewards");
             }
+
+            // --- Create Routes ---
+
+            // 1. Direct Route (Casablanca -> Tangier)
+            if (routeRepository.findByName("Casablanca - Tangier (Express)").isEmpty()) {
+                Station casaRoute = stationRepository.findByName("Casablanca Voyageurs");
+                Station tangierRoute = stationRepository.findByName("Tanger Ville");
+
+                if (casaRoute != null && tangierRoute != null) {
+                    Route expressRoute = new Route();
+                    expressRoute.setName("Casablanca - Tangier (Express)");
+                    expressRoute.setDescription("Direct high-speed connection");
+
+                    List<RouteDefinition> definitions = new ArrayList<>();
+
+                    // Start
+                    RouteDefinition start = new RouteDefinition();
+                    start.setRoute(expressRoute);
+                    start.setStation(casaRoute);
+                    start.setStopOrder(1);
+                    start.setDistanceFromPrevKm(0.0);
+                    start.setStandardTravelTimeMins(0);
+                    definitions.add(start);
+
+                    // End
+                    RouteDefinition end = new RouteDefinition();
+                    end.setRoute(expressRoute);
+                    end.setStation(tangierRoute);
+                    end.setStopOrder(2);
+                    end.setDistanceFromPrevKm(340.0);
+                    end.setStandardTravelTimeMins(130); // 2h 10m
+                    definitions.add(end);
+
+                    expressRoute.setRouteDefinitions(definitions);
+                    routeRepository.save(expressRoute);
+                    System.out.println("✅ Created Route: Casablanca - Tangier (Express)");
+                }
+            }
+
+            // 2. Route with Intermediate Stops (Casablanca -> Rabat -> Kenitra -> Tangier)
+            if (routeRepository.findByName("Casablanca - Tangier (Local)").isEmpty()) {
+                Station casaRoute = stationRepository.findByName("Casablanca Voyageurs");
+                Station rabatRoute = stationRepository.findByName("Rabat Agdal");
+                Station kenitraRoute = stationRepository.findByName("Kenitra");
+                Station tangierRoute = stationRepository.findByName("Tanger Ville");
+
+                if (casaRoute != null && rabatRoute != null && kenitraRoute != null && tangierRoute != null) {
+                    Route localRoute = new Route();
+                    localRoute.setName("Casablanca - Tangier (Local)");
+                    localRoute.setDescription("Stops at major cities along the coast");
+
+                    List<RouteDefinition> definitions = new ArrayList<>();
+
+                    // 1. Casa
+                    RouteDefinition def1 = new RouteDefinition();
+                    def1.setRoute(localRoute);
+                    def1.setStation(casaRoute);
+                    def1.setStopOrder(1);
+                    def1.setDistanceFromPrevKm(0.0);
+                    def1.setStandardTravelTimeMins(0);
+                    definitions.add(def1);
+
+                    // 2. Rabat
+                    RouteDefinition def2 = new RouteDefinition();
+                    def2.setRoute(localRoute);
+                    def2.setStation(rabatRoute);
+                    def2.setStopOrder(2);
+                    def2.setDistanceFromPrevKm(87.0);
+                    def2.setStandardTravelTimeMins(60);
+                    definitions.add(def2);
+
+                    // 3. Kenitra
+                    RouteDefinition def3 = new RouteDefinition();
+                    def3.setRoute(localRoute);
+                    def3.setStation(kenitraRoute);
+                    def3.setStopOrder(3);
+                    def3.setDistanceFromPrevKm(40.0);
+                    def3.setStandardTravelTimeMins(30);
+                    definitions.add(def3);
+
+                    // 4. Tangier
+                    RouteDefinition def4 = new RouteDefinition();
+                    def4.setRoute(localRoute);
+                    def4.setStation(tangierRoute);
+                    def4.setStopOrder(4);
+                    def4.setDistanceFromPrevKm(200.0);
+                    def4.setStandardTravelTimeMins(90);
+                    definitions.add(def4);
+
+                    localRoute.setRouteDefinitions(definitions);
+                    routeRepository.save(localRoute);
+                    System.out.println("✅ Created Route: Casablanca - Tangier (Local)");
+                }
+            }
+
         } catch (Exception e) {
             System.err.println("Error during data initialization: " + e.getMessage());
             e.printStackTrace();

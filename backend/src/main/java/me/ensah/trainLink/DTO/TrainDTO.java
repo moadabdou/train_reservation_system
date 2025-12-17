@@ -14,4 +14,7 @@ public class TrainDTO {
     private String name;
     private Long providerId;
     private String providerName;
+    private Long trainLayoutId;
+    private String trainLayoutName;
+    private int totalSeats;
 }

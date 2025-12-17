@@ -23,11 +23,11 @@ public class AuthService {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalArgumentException("User with this email already exists");
         }
-        
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
+
         User savedUser = userRepository.save(user);
-        
+
         return jwtService.generateToken(savedUser);
     }
 
@@ -43,13 +43,23 @@ public class AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("Invalid email or password");
         }
-        
-        // STEP 3: If password matches, generate and return JWT token(which is a String , that serves as authentication proof)
+
+        // STEP 3: If password matches, generate and return JWT token(which is a String
+        // , that serves as authentication proof)
         // Token will contain user's email and expiration time
         return jwtService.generateToken(user);
     }
-    //jwt stands for JSON Web Token which is a compact, URL-safe means of representing claims to be transferred between two parties.
-    
+    // jwt stands for JSON Web Token which is a compact, URL-safe means of
+    // representing claims to be transferred between two parties.
+
+    public User validateToken(String token) {
+        if (jwtService.isTokenExpired(token)) {
+            throw new IllegalArgumentException("Token expired");
+        }
+        String email = jwtService.extractUsername(token);
+        return getUserByEmail(email);
+    }
+
     /**
      * Gets a user by their email address
      * Used to fetch user details after login/register

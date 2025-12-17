@@ -5,6 +5,7 @@ import me.ensah.trainLink.DTO.AuthRequest;
 import me.ensah.trainLink.DTO.AuthResponse;
 import me.ensah.trainLink.DTO.RegisterRequest;
 import me.ensah.trainLink.model.User;
+import me.ensah.trainLink.model.UserStatus;
 import me.ensah.trainLink.services.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class AuthControllerTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User(1L, "Test User", "test@example.com", "password", "client");
+        testUser = new User(1L, "Test User", "test@example.com", "password", "client", UserStatus.ACTIVE);
     }
 
     @Test

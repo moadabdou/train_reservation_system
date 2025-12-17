@@ -13,6 +13,12 @@ import org.springframework.data.domain.Pageable;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 	List<Booking> findByUserId(Long userId);
+
 	Page<Booking> findByUserId(Long userId, Pageable pageable);
+
 	Optional<Booking> findByReferenceCode(String referenceCode);
+
+	long countByBookingDateBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
+
+	List<Booking> findTop5ByOrderByBookingDateDesc();
 }

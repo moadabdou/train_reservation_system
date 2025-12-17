@@ -143,7 +143,7 @@ const MyBookings: React.FC = () => {
                                     </div>
 
                                     <div className="booking-footer">
-                                        <span className="total-price">{booking.totalPrice.toFixed(2)} MAD</span>
+                                        <span className="total-price">{booking.totalPrice.toFixed(2)} dh</span>
                                         <div className="booking-actions">
                                             <button
                                                 className="view-btn"

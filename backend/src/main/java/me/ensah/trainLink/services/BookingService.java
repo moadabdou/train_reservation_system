@@ -174,6 +174,7 @@ public class BookingService {
             dto.setStatus(b.getStatus());
             dto.setPassengersCount(b.getPassengers().size());
             dto.setTotalPrice(b.getSchedule().getPrice().multiply(BigDecimal.valueOf(b.getPassengers().size())));
+            dto.setUserEmail(b.getUser().getEmail());
             return dto;
         }).collect(Collectors.toList());
         return new PageImpl<>(content, pageable, bookingPage.getTotalElements());
@@ -247,5 +248,41 @@ public class BookingService {
             }
         }
         throw new IllegalStateException("Unable to generate unique booking reference");
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookingSummaryDTO> getAllBookings(Pageable pageable) {
+        Page<Booking> bookingPage = bookingRepository.findAll(pageable);
+        List<BookingSummaryDTO> content = bookingPage.getContent().stream().map(b -> {
+            BookingSummaryDTO dto = new BookingSummaryDTO();
+            dto.setBookingId(b.getId());
+            dto.setReferenceCode(b.getReferenceCode());
+            dto.setScheduleId(b.getSchedule().getId());
+            dto.setBookingDate(b.getBookingDate());
+            dto.setStatus(b.getStatus());
+            dto.setPassengersCount(b.getPassengers().size());
+            dto.setTotalPrice(b.getSchedule().getPrice().multiply(BigDecimal.valueOf(b.getPassengers().size())));
+            dto.setUserEmail(b.getUser().getEmail());
+            return dto;
+        }).collect(Collectors.toList());
+        return new PageImpl<>(content, pageable, bookingPage.getTotalElements());
+    }
+
+    @Transactional
+    public void cancelBookingAdmin(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            return;
+        }
+
+        if (booking.getStatus() == BookingStatus.CONFIRMED) {
+            paymentService.refundPayment(booking);
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+        scheduleRepository.incrementAvailableSeats(booking.getSchedule().getId(), booking.getPassengers().size());
     }
 }

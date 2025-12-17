@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./api";
 
 export interface PassengerRequest {
     name: string;
@@ -22,7 +22,7 @@ export interface BookingSummary {
     referenceCode: string;
     scheduleId: number;
     bookingDate: string;
-    status: 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'PENDING_PAYMENT';
+    status: "CONFIRMED" | "CANCELLED" | "COMPLETED" | "PENDING_PAYMENT";
     passengersCount: number;
     totalPrice: number;
     // Additional fields from schedule (we'll join these on frontend or backend)
@@ -41,13 +41,13 @@ export interface BookingsPage {
 }
 
 export const createBooking = async (request: CreateBookingRequest): Promise<BookingResponse> => {
-    const response = await api.post<BookingResponse>('/bookings', request);
+    const response = await api.post<BookingResponse>("/bookings", request);
     return response.data;
 };
 
 export const getMyBookings = async (page: number = 0, size: number = 10): Promise<BookingsPage> => {
-    const response = await api.get<BookingsPage>('/bookings', {
-        params: { page, size }
+    const response = await api.get<BookingsPage>("/bookings", {
+        params: { page, size },
     });
     return response.data;
 };
@@ -90,5 +90,5 @@ export interface PaymentRequest {
 }
 
 export const processPayment = async (request: PaymentRequest): Promise<void> => {
-    await api.post('/payments/process', request);
+    await api.post("/payments/process", request);
 };

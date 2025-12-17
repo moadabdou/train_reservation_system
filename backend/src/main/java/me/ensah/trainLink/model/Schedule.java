@@ -27,12 +27,14 @@ public class Schedule {
     @JoinColumn(name = "train_id", nullable = false)
     private Train train;
 
-    // A schedule has one departure station, but a station can be a departure point for many schedules
+    // A schedule has one departure station, but a station can be a departure point
+    // for many schedules
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departure_station_id", nullable = false)
     private Station departureStation;
 
-    // A schedule has one arrival station, but a station can be an arrival point for many schedules
+    // A schedule has one arrival station, but a station can be an arrival point for
+    // many schedules
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arrival_station_id", nullable = false)
     private Station arrivalStation;
@@ -42,12 +44,15 @@ public class Schedule {
 
     @Column(name = "arrival_time", nullable = false)
     private LocalDateTime arrivalTime;
-    
+
     // Using BigDecimal is best practice for currency to avoid floating-point errors
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     @Column(name = "available_seats", nullable = false)
     private int availableSeats;
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<RouteStop> routeStops;
 
 }
